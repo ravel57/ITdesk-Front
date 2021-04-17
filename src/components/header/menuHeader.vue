@@ -1,7 +1,7 @@
 <template>
-  <div class="header">
+  <div class="menuHeader">
     <span
-        onclick="menu()"
+        @click="menu"
         style="cursor: pointer; user-select: none;"
     > &#9776;Меню </span>
 
@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: "header",
+  name: "menuHeader",
   methods: {
     menu() {
       if (document.getElementById("left-side").style.display === "") {
@@ -27,14 +27,14 @@ export default {
 </script>
 
 <style scoped>
-.header {
+.menuHeader {
   height: 40px;
   width: 100%;
   background-color: #dde8fa;
   border-bottom: 1px solid #adb2b2;
 }
 
-#header span {
+.menuHeader span {
   /*width: 233px;*/
   height: 100%;
   font-size: 24px;

@@ -1,19 +1,19 @@
 <template>
-  <div id="left-side" >
-      <div>
-    <span class="filter_button">
-        <img src="/images/toList.png" style="transform: scale(0.85)">
-    </span>
-        <span class="filter_button">
-        <img src="/images/viewSettings.png" style="margin: 8px 0; transform: scale(1.1);">
-    </span>
-        <span class="filter_button">
-        <img src="/images/search.png" style="transform: scale(0.8)">
-    </span>
-        <span class="filter_button">
-        <a href="/"><img src="/images/refresh.png" style="transform: scale(1.25)"></a>
-    </span>
-      </div>
+  <div id="left-side">
+    <div id="filters">
+      <span class="filter_button">
+          <img src="@/images/toList.png" style="transform: scale(0.85)">
+      </span>
+      <span class="filter_button">
+          <img src="@/images/viewSettings.png" style="margin: 8px 0; transform: scale(1.1);">
+      </span>
+      <span class="filter_button">
+          <img src="@/images/search.png" style="transform: scale(0.8)">
+      </span>
+      <span class="filter_button">
+          <a href="/"><img src="@/images/refresh.png" style="transform: scale(1.25)"></a>
+      </span>
+    </div>
     <div class="left-side-menu-component"></div>
     <div class="left-side-menu-component"></div>
     <div class="left-side-menu-component"></div>
@@ -25,7 +25,7 @@
 
 <script>
 export default {
-name: "left-menu"
+  name: "leftMenu"
 }
 </script>
 

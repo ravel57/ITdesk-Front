@@ -1,11 +1,10 @@
 <template>
-  <div class="messages"
-       messages="${messages}"
-       ref="messages"
-  >
-    <div className="message"
-         v-for="message in messages"
-         :class="message.messageType"
+  <div id="messages" ref="messages">
+    <div
+        v-for="(message) in messages"
+        :text="message.text"
+        :key="message.id"
+        :class="message.messageType"
     >
       {{ message.text }}
     </div>
@@ -14,49 +13,38 @@
 </template>
 
 <script>
-
 export default {
+
   name: "messages",
+
   data() {
-    return {
-      messages: [
-        {text: "123123123", messageType: "message client"},
-        {text: "123123123", messageType: "message client"},
-        {text: "123123123", messageType: "message client"},
-        {text: "123123123", messageType: "message client"},
-        {text: "123123123", messageType: "message client"},
-        {text: "123123123", messageType: "message client"},
-        {text: "123123123", messageType: "message client"},
-        {text: "123123123", messageType: "message client"}
-      ],
-      messageText: '',
-    }
+    return {}
   },
-  methods: {
-    messageHandlerEnter(e) {
-      if (e.ctrlKey)
-        this.sendMessage()
-      // element.scrollTop = element.scrollHeight;
-    },
-  }
-  ,
+
+  methods: {},
+
   mounted: function () {
-    let lmessages = JSON.parse(this.$refs.messages.getAttribute('messages')
-        .replaceAll('\'', '\"'))
-    this.messages = lmessages
-    // console.log(this.$refs.messages)
+    const divName = 'impmsg'
+    this.$store.state.messages = JSON.parse(document.getElementById(divName)
+        .getAttribute('messages').replaceAll('\'', '\"'))
+    document.getElementById(divName).remove();
+    setTimeout(() => {
+      let element = document.getElementById('messages')
+      element.scrollTop = element.scrollHeight;
+    }, 10)
   },
-// computed{
-//
-// },
-// watch{
-//
-// }
+
+  computed: {
+    messages() {
+      return this.$store.getters.MESSAGES;
+    }
+  }
+
 }
 </script>
 
 <style scoped>
-.messages {
+#messages {
   width: 100%;
   overflow: auto;
   /* max-height: calc(100% - 191px); */

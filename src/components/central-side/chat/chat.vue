@@ -1,5 +1,5 @@
 <template>
-  <div class="chat">
+  <div id="chat">
     <client-info/>
     <messages/>
     <replay/>
@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import clientInfo from "@/components/central-side/dialog/clientInfo";
-import messages from "@/components/central-side/dialog/messages";
-import replay from "@/components/central-side/dialog/replay";
+import clientInfo from "@/components/central-side/chat/clientInfo";
+import messages from "@/components/central-side/chat/messages";
+import replay from "@/components/central-side/chat/replay";
 
 export default {
   name: "chat",
@@ -33,7 +33,7 @@ p {
   margin: 0;
 }
 
-.chat {
+#chat {
   /* display: grid; */
   width: 100%;
   position: relative;

@@ -1,80 +1,98 @@
 <template>
-  <div id="check-boxes"
-       tasks="${tasks}"
-       ref="task"
-  >
+  <div id="check-boxes">
     <p style="margin: 5px 10px"><b>Задачи</b></p>
     <div style="padding: 0 10px;">
       <!--      <div style="display: flex; justify-content: center">&#45;&#45;%>-->
       <textarea type="text"
-                v-model="newTaskStr"
+                v-model="newTaskInput"
                 placeholder="Новая задача"
-                @keydown.enter="handleEnter"
+                @keydown.ctrl.enter="addTask"
                 class="task-input"
       ></textarea>
       <button
-          v-on:click="addCheckBox"
+          v-on:click="addTask"
           style="display: block; width: 100%; margin-top: 3px;"
       >добавить
       </button>
     </div>
 
-    <div class="check-box"
-         v-for="(checkBox, i) in checkBoxes"
-         v-bind:class="[checkBox.actual ? '' : 'closed']"
+    <div
+        class="check-box"
+        v-for="(checkBox, index) in tasks"
+        :class="{'closed' : !checkBox.actual, '' : checkBox.actual}"
+        :key="checkBox.id"
     >
       {{ checkBox.text }}
-      <span v-text="checkBox.actual ? 'x' : '+'"
-            @click="chengeTaskStatus(i)"
-            class="task-button"
+      <span
+          v-text="checkBox.actual ? 'x' : '+'"
+          @click="changeTaskStatus(index)"
+          class="task-button"
       ></span>
     </div>
+
   </div>
 </template>
 
 <script>
+import {sendTask} from "@/util/ws";
+
 export default {
   name: "checkBoxes",
+
   data() {
     return {
-      newTaskStr: '',
-      checkBoxes: [],
-      // active: false,
-      // upHere: false,
-      // data: null
+      newTaskInput: '',
     }
   },
+
   methods: {
-    addCheckBox() {
-      console.log("new task: ", this.newTaskStr)
-      if (this.newTaskStr > '') {
-        this.checkBoxes.push({text: this.newTaskStr, actual: true})
-        sendTaskWS(this.newTaskStr)
-        this.newTaskStr = ''
+    addTask() {
+      if (this.newTaskInput > '') {
+        let newTask = {
+          id: this.$store.getters.TASKS.length,
+          clientId: this.$store.getters.CLIENT.id,
+          text: this.newTaskInput,
+          actual: true
+        }
+        // console.log("new task: ", newTask)
+        // this.$store.commit("addTask", newTask)
+        sendTask(newTask)
+        this.newTaskInput = ''
       }
     },
 
-    handleEnter(e) {
-      if (e.ctrlKey)
-        this.addCheckBox()
+    changeTaskStatus(index) {
+      let task = this.$store.getters.TASKS[index]
+      task.actual = !task.actual
+      this.$store.commit('changeTask', task)
+      // console.log('this.$store.getters.TASKS[index] = ', this.$store.getters.TASKS[index])
+      sendTask(task)
     },
-    chengeTaskStatus(index) {
-      console.log("changed: ", index)
-      this.checkBoxes[index].actual = !this.checkBoxes[index].actual
-      changedTaskStatusWS(index, this.checkBoxes[index].actual)
+
+    actClass(index) {
+      return this.$store.getters.TASKS[index].actual ? '' : 'closed'
+    }
+
+  },
+
+  computed: {
+    tasks() {
+      return this.$store.getters.TASKS
     },
+
+
   },
 
   mounted: function () {
-    // let tasks = JSON.parse(this.$refs.tasks.getAttribute('tasks')
-    this.checkBoxes = JSON.parse(document.getElementById("check-boxes").getAttribute('tasks')
-        .replaceAll('\'', '\"'))
-    // console.log(tasks)
+    const divName = 'inptsks'
+    this.$store.state.tasks = JSON.parse(document.getElementById(divName)
+        .getAttribute('tasks').replaceAll('\'', '\"'))
+    document.getElementById(divName).remove();
   },
 }
 </script>
 
-<style >
+<style scoped>
 #check-boxes {
   width: 400px;
   border-left: 1px solid #adb2b2;
@@ -126,7 +144,7 @@ export default {
   background: darkred;
 }
 
-.task-input{
+.task-input {
   height: 100px;
   /* max-height: 100px; */
   margin: 0px;

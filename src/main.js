@@ -1,12 +1,18 @@
 import Vue from 'vue'
+import VueResource from 'vue-resource'
 import App from './App.vue'
-import router from './router'
+import { connect } from './util/ws'
+// import router from './router'
 import store from './store'
 
 Vue.config.productionTip = false
 
+connect()
+
+Vue.use(VueResource)
+
 new Vue({
-  router,
+  el: '#app',
   store,
-  render: function (h) { return h(App) }
-}).$mount('#app')
+  render: a => a(App)
+})

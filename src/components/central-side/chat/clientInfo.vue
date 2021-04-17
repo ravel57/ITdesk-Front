@@ -3,13 +3,13 @@
     <div style="display: flex">
       <div>
         <div class="client">
-        <p>
-          firstName lastName
-        </p>
-        <p style="font-size: 0.7em; margin-bottom: 6px;">
-          organization
-        </p>
-      </div>
+          <p>
+            {{ firstName }} {{ lastName }}
+          </p>
+          <p style="font-size: 0.7em; margin-bottom: 6px;">
+            {{ organization }}
+          </p>
+        </div>
         <div style="display: flex">
           <div class="client-field">
             Кастомное поле 1
@@ -34,8 +34,30 @@
 
 <script>
 export default {
-  name: "clientInfo"
+  name: "clientInfo",
+
+  mounted: function () {
+    const divName = 'client'
+    let tmp = JSON.parse(document.getElementById(divName).getAttribute('client').replaceAll('\'', '\"'))
+    this.$store.state.client = tmp
+    // console.log(tmp)
+    document.getElementById(divName).remove();
+  },
+
+  computed: {
+    firstName() {
+      return this.$store.getters.CLIENT.firstName
+    },
+    lastName() {
+      return this.$store.getters.CLIENT.lastName
+    },
+    organization() {
+      return this.$store.getters.CLIENT.organization
+    },
+  }
+
 }
+
 </script>
 
 <style scoped>

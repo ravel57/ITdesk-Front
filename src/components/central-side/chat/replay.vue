@@ -3,7 +3,7 @@
         <textarea class="input-textarea"
                   v-model="messageText"
                   placeholder="Сообщение"
-                  @keydown.ctrl.enter="messageHandlerEnter"
+                  @keydown.ctrl.enter="sendMessage"
                   type="text"
         ></textarea>
     <div class="reply send-button">
@@ -14,9 +14,14 @@
 
 <script>
 import {sendMessage} from "@/util/ws";
+import messages from "@/components/central-side/chat/messages";
 
 export default {
   name: "replay",
+  // props: ['messages'],
+  // components: {
+  //   messages,
+  // },
   data() {
     return {
       'messageText': '',
@@ -25,37 +30,26 @@ export default {
   methods: {
     sendMessage() {
       if (this.messageText > '') {
-        sendMessage({
-              'clientId': -1,
-              'supportId': 1,
-              'text': this.messageText,
-            }
-        )
-        console.log('message ', this.messageText)
+        let newMessage = {
+          clientId: this.$store.getters.CLIENT.id,
+          supportId: 1,
+          text: this.messageText,
+          messageType: "message support"
+        }
+        // this.$store.commit('newMessage', newMessage)
+        sendMessage(newMessage)
         this.messageText = ''
 
-        // let element = document.getElementById("messages")
-        // let h = element.scrollHeight
-        // this.messages.push({
-        //     id: this.messages.length,
-        //     messageType: "message support",
-        //     supportId: 0,
-        //     text: this.messageText
-        // })
-        // setTimeout(() => {
-        //   if (element.scrollTop + element.clientHeight + 300 >= h) {
-        //     element.scrollTop = element.scrollHeight
-        //   }
-        // }, 20)
-        // // console.log(element.scrollHeight)
+        let element = this.$refs.messages
+        let h = element.scrollHeight
+        setTimeout(() => {
+          if (element.scrollTop + element.clientHeight + 300 >= h)
+            element.scrollTop = element.scrollHeight
+        }, 20)
+        // console.log(element.scrollHeight)
       }
-    },
-    messageHandlerEnter(e) {
-      //if (e.ctrlKey)
-      this.sendMessage()
-      // element.scrollTop = element.scrollHeight;
-    },
-  },
+    }
+  }
 }
 </script>
 
