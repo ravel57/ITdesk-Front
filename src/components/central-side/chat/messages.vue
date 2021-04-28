@@ -71,6 +71,7 @@ export default {
   /*max-height: 400px;*/
   position: relative;
   margin: 10px;
+  white-space: pre;
 }
 
 .message.client {

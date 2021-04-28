@@ -29,13 +29,13 @@ export default new Vuex.Store({
         },
 
         addTask: (state, payload) => {
-            state.tasks.push(payload)
+            state.tasks.unshift(payload)
         },
 
         changeTask: (state, payload) => {
             // new task
             if (payload.id >= state.tasks.length)
-                state.tasks.push(payload)
+                state.tasks.unshift(payload)
             //change task
             else {
                 state.tasks[payload.id].id = payload.id
