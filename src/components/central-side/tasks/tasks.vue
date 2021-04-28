@@ -54,8 +54,7 @@ export default {
           text: this.newTaskInput,
           actual: true
         }
-        // console.log("new task: ", newTask)
-        // this.$store.commit("addTask", newTask)
+        this.$store.commit("addTask", newTask)
         sendTask(newTask)
         this.newTaskInput = ''
       }

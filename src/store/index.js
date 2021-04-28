@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {isBoolean} from "vue-resource/src/util";
 
 Vue.use(Vuex)
 
@@ -32,18 +33,17 @@ export default new Vuex.Store({
         },
 
         changeTask: (state, payload) => {
-            // console.log('changeTask()')
-            // console.log('payload = ', payload)
-            // console.log('payload.id = ', payload.id)
-            // console.log('state.tasks.length = ', state.tasks.length)
+            // new task
             if (payload.id >= state.tasks.length)
                 state.tasks.push(payload)
+            //change task
             else {
-                // console.log(state.tasks)
-                state.tasks[payload.id] = payload
+                state.tasks[payload.id].id = payload.id
+                state.tasks[payload.id].clientId = payload.clientId
+                state.tasks[payload.id].text = payload.text
+                state.tasks[payload.id].actual = payload.actual
             }
         },
-
     },
 
     actions: {},

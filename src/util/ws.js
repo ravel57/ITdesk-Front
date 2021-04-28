@@ -25,9 +25,7 @@ export function connect() {
                             element.scrollTop = element.scrollHeight
                     }, 10)
                 } else if (m.hasOwnProperty('actual')) {
-                    // console.log(store.getters.TASKS[8].actual)
                     store.commit('changeTask', m)
-                    // console.log(store.getters.TASKS[8].actual)
                 }
             }
         })
