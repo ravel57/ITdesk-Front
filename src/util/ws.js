@@ -15,10 +15,9 @@ export function connect() {
         stompClient.subscribe('/topic/activity', message => {
             let m = JSON.parse(message.body)
             if (m.clientId === store.getters.CLIENT.id) {
-                // console.log('m.clientId === store.getters.CLIENT.id')
                 // handlers.forEach(handler => handler(JSON.parse(message.body)))
                 if (m.hasOwnProperty('messageType')) {
-                    store.commit('newMessage', m)
+                    store.commit('changeMessage', m)
                     let element = document.getElementById("messages")
                     setTimeout(() => {
                         if (element.scrollTop + element.clientHeight + 300 >= element.scrollHeight)

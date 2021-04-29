@@ -18,14 +18,14 @@
 
     <div
         class="check-box"
-        v-for="(checkBox, index) in tasks"
-        :class="{'closed' : !checkBox.actual, '' : checkBox.actual}"
+        v-for="(checkBox, index) in tasks.slice().reverse()"
+        :class="[checkBox.actual ? '' : 'closed', checkBox.undelivered ? 'undelivered' : '']"
         :key="checkBox.id"
     >
       {{ checkBox.text }}
       <span
           v-text="checkBox.actual ? 'x' : '+'"
-          @click="changeTaskStatus(index)"
+          @click="changeTaskStatus(checkBox.id)"
           class="task-button"
       ></span>
     </div>
@@ -55,7 +55,11 @@ export default {
           actual: true
         }
         this.$store.commit("addTask", newTask)
-        sendTask(newTask)
+        try {
+          sendTask(newTask)
+        } catch {
+          alert('server error')
+        }
         this.newTaskInput = ''
       }
     },
@@ -107,6 +111,10 @@ export default {
   display: flex;
   background: #7fffd4;
   overflow-wrap: anywhere;
+}
+
+.check-box.undelivered {
+  background: #f0fff7;
 }
 
 .check-box:hover {

@@ -61,5 +61,7 @@ p {
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: 'liga';
+  cursor: pointer;
+  user-select: none;
 }
 </style>

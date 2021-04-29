@@ -31,16 +31,21 @@ export default {
     sendMessage() {
       if (this.messageText > '') {
         let newMessage = {
+          id: this.$store.getters.MESSAGES.length,
           clientId: this.$store.getters.CLIENT.id,
           supportId: 1,
           text: this.messageText,
           messageType: "message support"
         }
-        // this.$store.commit('newMessage', newMessage)
-        sendMessage(newMessage)
+        this.$store.commit('newMessage', newMessage)
+        try {
+          sendMessage(newMessage)
+        } catch {
+          alert('server error')
+        }
         this.messageText = ''
 
-        let element = this.$refs.messages
+        let element = document.getElementById("messages")
         let h = element.scrollHeight
         setTimeout(() => {
           if (element.scrollTop + element.clientHeight + 300 >= h)

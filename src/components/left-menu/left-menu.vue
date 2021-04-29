@@ -1,31 +1,60 @@
 <template>
   <div id="left-side">
     <div id="filters">
-      <span class="filter_button">
-          <img src="@/images/toList.png" style="transform: scale(0.85)">
+      <!--      <span class="filter_button">-->
+      <!--          <img src="@/images/toList.png" style="transform: scale(0.85)">-->
+      <!--      </span>-->
+      <!--      <span class="filter_button">-->
+      <!--          <img src="@/images/viewSettings.png" style="margin: 8px 0; transform: scale(1.1);">-->
+      <!--      </span>-->
+      <!--      <span class="filter_button">-->
+      <!--          <img src="@/images/search.png" style="transform: scale(0.8)">-->
+      <!--      </span>-->
+      <!--      <span class="filter_button">-->
+      <!--          <a href="/"><img src="@/images/refresh.png" style="transform: scale(1.25)"></a>-->
+      <!--      </span>-->
+      <span class="filter_button icon" @click="back">
+        <p>arrow_back</p>
       </span>
-      <span class="filter_button">
-          <img src="@/images/viewSettings.png" style="margin: 8px 0; transform: scale(1.1);">
+      <span class="filter_button icon" @click="changeView">
+        <p v-text="listViewTypes ? 'view_list' : 'dashboard'" href=""></p>
       </span>
-      <span class="filter_button">
-          <img src="@/images/search.png" style="transform: scale(0.8)">
+      <span class="filter_button icon">
+        <p style="top: -7px;">settings_suggest</p>
       </span>
-      <span class="filter_button">
-          <a href="/"><img src="@/images/refresh.png" style="transform: scale(1.25)"></a>
+      <span class="filter_button icon">
+        <p>search</p>
+      </span>
+      <span class="filter_button icon">
+        <a href="" style="text-decoration: none; color: #000">refresh</a>
       </span>
     </div>
-    <div class="left-side-menu-component"></div>
-    <div class="left-side-menu-component"></div>
-    <div class="left-side-menu-component"></div>
-    <div class="left-side-menu-component"></div>
-    <div class="left-side-menu-component"></div>
-    <div class="left-side-menu-component"></div>
+    <div class="left-side-menu-component">1</div>
+    <div class="left-side-menu-component">2</div>
+    <div class="left-side-menu-component">3</div>
+    <div class="left-side-menu-component">4</div>
+    <div class="left-side-menu-component">5</div>
+    <div class="left-side-menu-component">6</div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "leftMenu"
+  name: "leftMenu",
+  data() {
+    return {
+      listViewTypes: true
+    }
+  },
+  methods: {
+    changeView() {
+      this.listViewTypes = !this.listViewTypes;
+    },
+    back(){
+      history.back()
+    }
+  }
+
 }
 </script>
 
@@ -71,16 +100,24 @@ export default {
 
 .filter_button {
   height: 100%;
-  width: 25%;
+  width: 18%;
   text-align: center;
   border: 1px solid #adb2b2;
   box-sizing: border-box;
   border-radius: 3px;
-  margin: 0 5px;
+  margin: 0 3px;
+  cursor: pointer;
+  user-select: none;
 }
 
-.filter_button img {
-  width: 40px;
+.filter_button p {
+  position: relative;
+  top: -5px;
+}
+
+.filter_button a {
+  position: relative;
+  top: -5px;
 }
 
 .filter_button:hover {
@@ -124,6 +161,27 @@ button {
   #left-side {
     display: none;
   }
+}
+
+.icon {
+  font-size: 40px;
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1.26;
+  text-transform: none;
+  letter-spacing: normal;
+  justify-content: center;
+  display: flex;
+  /*color: #fff;*/
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
 }
 
 </style>

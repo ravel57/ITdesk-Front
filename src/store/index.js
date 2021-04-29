@@ -25,21 +25,37 @@ export default new Vuex.Store({
 
     mutations: {
         newMessage: (state, payload) => {
+            payload.undelivered = true
             state.messages.push(payload)
         },
 
+        changeMessage: (state, payload) => {
+            if (payload.id >= state.messages.length) {
+                state.messages.push(payload)
+
+            } else if (state.messages[payload.id].undelivered) {
+                state.messages[payload.id].undelivered = false
+                delete state.messages[payload.id].undelivered
+            }
+            // state.messages[payload.id].text = payload.text
+
+        },
+
         addTask: (state, payload) => {
-            state.tasks.unshift(payload)
+            payload.undelivered = true
+            state.tasks.push(payload)
         },
 
         changeTask: (state, payload) => {
             // new task
             if (payload.id >= state.tasks.length)
-                state.tasks.unshift(payload)
+                state.tasks.push(payload)
             //change task
             else {
-                state.tasks[payload.id].id = payload.id
-                state.tasks[payload.id].clientId = payload.clientId
+                if (state.tasks[payload.id].undelivered) {
+                    state.tasks[payload.id].undelivered = false
+                    delete state.tasks[payload.id].undelivered
+                }
                 state.tasks[payload.id].text = payload.text
                 state.tasks[payload.id].actual = payload.actual
             }

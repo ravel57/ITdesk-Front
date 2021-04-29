@@ -4,7 +4,7 @@
         v-for="(message) in messages"
         :text="message.text"
         :key="message.id"
-        :class="message.messageType"
+        :class="[message.undelivered ? ' undelivered' : '',  message.messageType]"
     >
       {{ message.text }}
     </div>
@@ -60,7 +60,7 @@ export default {
   /*float: left;*/
   min-width: 100px;
   /*width: 40vw;*/
-  max-width: 75%;
+  max-width: 400px;
   border: 1px solid #adb2b2;
   border-radius: 3px;
   padding: 10px;
@@ -71,7 +71,12 @@ export default {
   /*max-height: 400px;*/
   position: relative;
   margin: 10px;
-  white-space: pre;
+  white-space: pre-line;
+  -moz-hyphens:auto;
+  -ms-hyphens:auto;
+  -webkit-hyphens:auto;
+  hyphens:auto;
+  word-wrap:break-word;
 }
 
 .message.client {
@@ -90,6 +95,9 @@ export default {
   /*word-wrap: break-word;*/
 }
 
+.message.support.undelivered {
+  background: #fbfcff;
+}
 
 .message p {
   margin: 0;
