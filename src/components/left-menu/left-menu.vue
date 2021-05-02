@@ -50,7 +50,7 @@ export default {
     changeView() {
       this.listViewTypes = !this.listViewTypes;
     },
-    back(){
+    back() {
       history.back()
     }
   }
@@ -161,27 +161,6 @@ button {
   #left-side {
     display: none;
   }
-}
-
-.icon {
-  font-size: 40px;
-  font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  display: inline-block;
-  line-height: 1.26;
-  text-transform: none;
-  letter-spacing: normal;
-  justify-content: center;
-  display: flex;
-  /*color: #fff;*/
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'liga';
 }
 
 </style>

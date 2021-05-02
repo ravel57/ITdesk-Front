@@ -6,6 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
+        clients: [],
         messages: [],
         tasks: [],
         client: {}
@@ -20,7 +21,10 @@ export default new Vuex.Store({
         },
         CLIENT: state => {
             return state.client
-        }
+        },
+        CLIENTS: state => {
+            return state.clients
+        },
     },
 
     mutations: {
@@ -30,6 +34,9 @@ export default new Vuex.Store({
         },
 
         changeMessage: (state, payload) => {
+            // console.log('payload:', payload)
+            // console.log('payload.id:', payload.id)
+            // console.log('messages.length:', state.messages.length)
             if (payload.id >= state.messages.length) {
                 state.messages.push(payload)
 

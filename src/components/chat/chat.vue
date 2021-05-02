@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import clientInfo from "@/components/central-side/chat/clientInfo";
-import messages from "@/components/central-side/chat/messages";
-import replay from "@/components/central-side/chat/replay";
+import clientInfo from "@/components/chat/clientInfo";
+import messages from "@/components/chat/messages";
+import replay from "@/components/chat/replay";
 
 export default {
   name: "chat",

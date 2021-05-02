@@ -35,6 +35,7 @@
 
 <script>
 import {sendTask} from "@/util/ws";
+import axios from "axios";
 
 export default {
   name: "checkBoxes",
@@ -86,11 +87,16 @@ export default {
 
   },
 
-  mounted: function () {
-    const divName = 'inptsks'
-    this.$store.state.tasks = JSON.parse(document.getElementById(divName)
-        .getAttribute('tasks').replaceAll('\'', '\"'))
-    document.getElementById(divName).remove();
+  mounted: async function () {
+    try {
+      const divName = 'inptsks'
+      this.$store.state.tasks = JSON.parse(document.getElementById(divName)
+          .getAttribute('tasks').replaceAll('\'', '\"'))
+      document.getElementById(divName).remove();
+    } catch {
+      await axios.get('/api/v1/tasks/' + this.$route.params.id)
+          .then(response => (this.$store.state.tasks = response.data))
+    }
   },
 }
 </script>

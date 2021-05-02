@@ -33,15 +33,20 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "clientInfo",
 
-  mounted: function () {
-    const divName = 'client'
-    let tmp = JSON.parse(document.getElementById(divName).getAttribute('client').replaceAll('\'', '\"'))
-    this.$store.state.client = tmp
-    // console.log(tmp)
-    document.getElementById(divName).remove();
+  mounted: async function () {
+    try {
+      const divName = 'client'
+      this.$store.state.client = JSON.parse(document.getElementById(divName).getAttribute(divName).replaceAll('\'', '\"'))
+      document.getElementById(divName).remove();
+    } catch {
+      await axios.get('/api/v1/client/' + this.$route.params.id)
+          .then(response => (this.$store.state.client = response.data))
+    }
   },
 
   computed: {

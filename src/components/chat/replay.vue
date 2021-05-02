@@ -14,7 +14,7 @@
 
 <script>
 import {sendMessage} from "@/util/ws";
-import messages from "@/components/central-side/chat/messages";
+import messages from "@/components/chat/messages";
 
 export default {
   name: "replay",

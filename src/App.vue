@@ -1,32 +1,36 @@
 <template>
   <div style="height: 100%; width: 100%">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
     <menuHeader/>
     <div style="display: flex; height: calc(100% - 41px);">
       <left-menu/>
-      <chat/>
-      <tasks/>
+      <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
-import {addHandler} from '@/util/ws'
+// import {addHandler} from '@/util/ws'
 import menuHeader from "@/components/header/menuHeader"
 import leftMenu from "@/components/left-menu/left-menu";
-import chat from "@/components/central-side/chat/chat";
-import tasks from "@/components/central-side/tasks/tasks";
+import mainPage from "@/pages/main-page/mainPage";
+import chatPage from "@/pages/chat-page/chatPage";
 
 export default {
+
+
   components: {
     menuHeader,
     leftMenu,
-    chat,
-    tasks,
+    mainPage,
+    chatPage
   },
   data() {
     return {}
   },
-  mounted: function () {}
+  mounted: function () {
+  }
 
 
   // created() {
@@ -50,26 +54,27 @@ body {
   width: 100%;
   padding: 0;
   margin: 0;
+  font-family: 'Ubuntu';
 }
 
-//#app {
-//  font-family: Avenir, Helvetica, Arial, sans-serif;
-//  -webkit-font-smoothing: antialiased;
-//  -moz-osx-font-smoothing: grayscale;
-//  text-align: center;
-//  color: #2c3e50;
-//}
-//
-//#nav {
-//  padding: 30px;
-//
-//  a {
-//    font-weight: bold;
-//    color: #2c3e50;
-//
-//    &.router-link-exact-active {
-//      color: #42b983;
-//    }
-//  }
-//}
+.icon {
+  font-size: 40px;
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1.26;
+  text-transform: none;
+  letter-spacing: normal;
+  justify-content: center;
+  display: flex;
+  /*color: #fff;*/
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+}
 </style>

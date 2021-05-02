@@ -5,13 +5,19 @@
         style="cursor: pointer; user-select: none;"
     > &#9776;Меню </span>
 
-
   </div>
 </template>
 
 <script>
 export default {
+
   name: "menuHeader",
+  data() {
+    return {
+      menuShowStase: true,
+    }
+  },
+
   methods: {
     menu() {
       if (document.getElementById("left-side").style.display === "") {
@@ -78,7 +84,12 @@ export default {
 }
 
 @media screen and (max-height: 450px) {
-  .sidenav {padding-top: 15px;}
-  .sidenav a {font-size: 18px;}
+  .sidenav {
+    padding-top: 15px;
+  }
+
+  .sidenav a {
+    font-size: 18px;
+  }
 }
 </style>

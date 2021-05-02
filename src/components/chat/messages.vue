@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
 
   name: "messages",
@@ -23,15 +25,20 @@ export default {
 
   methods: {},
 
-  mounted: function () {
-    const divName = 'impmsg'
-    this.$store.state.messages = JSON.parse(document.getElementById(divName)
-        .getAttribute('messages').replaceAll('\'', '\"'))
-    document.getElementById(divName).remove();
+  mounted: async function () {
+    try {
+      const divName = 'impmsg'
+      this.$store.state.messages = JSON.parse(document.getElementById(divName)
+          .getAttribute('messages').replaceAll('\'', '\"'))
+      document.getElementById(divName).remove();
+    } catch {
+      await axios.get('/api/v1/messages/' + this.$route.params.id)
+          .then(response => (this.$store.state.messages = response.data))
+    }
     setTimeout(() => {
       let element = document.getElementById('messages')
       element.scrollTop = element.scrollHeight;
-    }, 10)
+    }, 1)
   },
 
   computed: {
@@ -72,11 +79,11 @@ export default {
   position: relative;
   margin: 10px;
   white-space: pre-line;
-  -moz-hyphens:auto;
-  -ms-hyphens:auto;
-  -webkit-hyphens:auto;
-  hyphens:auto;
-  word-wrap:break-word;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  word-wrap: break-word;
 }
 
 .message.client {
