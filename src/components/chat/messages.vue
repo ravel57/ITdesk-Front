@@ -5,6 +5,7 @@
         :text="message.text"
         :key="message.id"
         :class="[message.undelivered ? ' undelivered' : '',  message.messageType]"
+        :id="message.id"
     >
       {{ message.text }}
     </div>

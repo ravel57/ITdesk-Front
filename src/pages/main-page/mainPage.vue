@@ -1,14 +1,14 @@
 <template>
   <div id="right-side">
     <div class="right-side-column">
-      <div v-for="client in clients">
+      <div v-for="(client, index) in clients">
         <router-link
             class="client-card"
             :to="{name: 'chat', params: {id: client.id}}"
         >
           <div class="client-card-info" style="border-bottom: 1px solid #adb2b2; display: flex ">
             <span class="organization"> {{ client.organization }} </span>
-            <span class="name" v-text=""> {{ client.firstName, client.lastName }} </span>
+            <span class="name" v-text=""> {{ client.firstName + "  " + client.lastName }} </span>
             <br>
           </div>
           <div
@@ -17,7 +17,11 @@
           >
             <p>{{ task.text }}</p>
           </div>
-          <span class="client-card-date">  {{ getData(client) }} </span>
+          <div class="client-card-info date" style="display: flex; border-top: 1px solid #adb2b2">
+            <!--            <span class="date"> {{ getDif(client.lastMessageDateTime) }} </span>-->
+            <span class="date"> {{ getDif(index) }} </span>
+            <span class="date" style="margin-left: 0;"> {{ "(" + getClientLastMessageDateTime(client) + ")" }} </span>
+          </div>
         </router-link>
       </div>
     </div>
@@ -31,25 +35,37 @@ export default {
   name: "mainPage",
   data() {
     return {
-      // clients: [{
-      //   id: 11,
-      //   firstName: "123",
-      //   lastName: '123',
-      //   organization: '',
-      //   lastMessageDateTime: Date(),
-      //   tasks: [{text: '123'}, {text: '123'}, {text: '123'}, ],
-      // }]
+      // clients: [
+      //   {
+      //     id: 11,
+      //     firstName: "123",
+      //     lastName: '123',
+      //     organization: '',
+      //     lastMessageDateTime: 1619962500000,
+      //     tasks: [{text: '123'}, {text: '123'}, {text: '123'},],
+      //   },
+      //   {
+      //     id: 12,
+      //     firstName: "234",
+      //     lastName: '243',
+      //     organization: '',
+      //     lastMessageDateTime: 1619962800000,
+      //     tasks: [{text: '123'}, {text: '123'}, {text: '123'},],
+      //   },
+      // ],
     }
   },
 
   mounted: async function () {
     try {
       const divName = 'clients'
-      this.$store.state.clients = JSON.parse(
+      this.$store.state.clients =  JSON.parse(
           document.getElementById(divName).getAttribute(divName).replaceAll('\'', '\"')
       )
-      console.log(this.$store.getters.CLIENTS)
-      document.getElementById(divName).remove();
+      // console.log(this.$store.getters.CLIENTS)
+      // console.log(this.clients.firstName)
+      // console.log(this.clients.lastName)
+      // document.getElementById(divName).remove();
     } catch {
       await axios.get('/api/v1/clients/')
           .then(response => (this.$store.state.clients = response.data))
@@ -57,9 +73,39 @@ export default {
   },
 
   methods: {
-    getData(client) {
-      let options = {month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'};
+    getClientLastMessageDateTime(client) {
+      let options = {month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'}
       return new Date(client.lastMessageDateTime).toLocaleDateString("ru-RU", options)
+    },
+    getDif(index) {
+      let date = this.clients[index].lastMessageDateTime
+      console.log(Date.now())
+      let out = ''
+      let d = new Date(Date.now() - date)
+      let b = false
+      if (d.getUTCMonth()) {
+        out += d.getUTCMonth() + 'мес '
+        b = true
+      }
+      if (d.getUTCDate() - 1 | b) {
+        out += d.getUTCDate() - 1 + 'д '
+        b = true
+      }
+      if (d.getUTCHours() | b) {
+        out += d.getUTCHours() + 'ч '
+        b = true
+      }
+      if (d.getUTCMinutes() | b) {
+        out += d.getUTCMinutes() + 'м '
+        b = true
+      }
+      if (d.getUTCSeconds() | b) {
+        out += d.getUTCSeconds() + 'c '
+      }
+      // if (!b) {
+      //   out = '< 1м'
+      // }
+      return out
     }
   },
 
@@ -132,17 +178,23 @@ body {
   padding: 5px 0;
 }
 
-.client-card .client-card-date {
-  border-top: 1px solid #adb2b2;
-  display: flex;
-  align-content: flex-end;
-  justify-content: flex-end;
+.client-card .client-card-info .date {
   margin-right: 10px;
   margin-left: auto;
   font-size: 13px;
-  width: 100%;
-  font-weight: bold;
 }
+
+/*.client-card client-card-info.date {*/
+/*  border-top: 1px solid #adb2b2;*/
+/*  !*display: flex;*!*/
+/*  !*align-content: flex-end;*!*/
+/*  !*justify-content: flex-end;*!*/
+/*  margin-right: 10px;*/
+/*  margin-left: auto;*/
+/*  font-size: 13px;*/
+/*  width: 100%;*/
+/*  !*font-weight: bold;*!*/
+/*}*/
 
 .organization {
   margin-left: 10px;

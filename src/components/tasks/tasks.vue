@@ -75,7 +75,7 @@ export default {
 
     actClass(index) {
       return this.$store.getters.TASKS[index].actual ? '' : 'closed'
-    }
+    },
 
   },
 

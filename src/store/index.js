@@ -57,8 +57,9 @@ export default new Vuex.Store({
             // new task
             if (payload.id >= state.tasks.length)
                 state.tasks.push(payload)
-            //change task
+            // change task
             else {
+                // confirm delivery
                 if (state.tasks[payload.id].undelivered) {
                     state.tasks[payload.id].undelivered = false
                     delete state.tasks[payload.id].undelivered
@@ -67,6 +68,31 @@ export default new Vuex.Store({
                 state.tasks[payload.id].actual = payload.actual
             }
         },
+
+        changeMainPageMessage(state, message) {
+            let index = state.clients.findIndex(x => x.id === message.clientId)
+            state.clients[index].lastMessageDateTime = message.date
+            let tmp = state.clients[index]
+            state.clients.splice(index, 1)
+            state.clients.unshift(tmp)
+        },
+
+        changeMainPageTask(state, task) {
+            // console.log(task)
+            let clientIndex = state.clients.findIndex(c => c.id === task.clientId)
+            // console.log(state.clients[clientIndex].tasks)
+            let index = state.clients[clientIndex].tasks.findIndex(t => t.id === task.id)
+            // console.log(index)
+            if (index >= 0) {
+                if (!task.actual){
+                    state.clients[clientIndex].tasks.splice(index, 1)
+                }
+            } else {
+                state.clients[clientIndex].tasks.splice(index, 0, task)
+
+            }
+        },
+
     },
 
     actions: {},

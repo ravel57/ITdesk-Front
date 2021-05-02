@@ -14,26 +14,33 @@ export function connect() {
         // console.log('Connected: ' + frame)
         stompClient.subscribe('/topic/activity', message => {
             let m = JSON.parse(message.body)
-            if (m.clientId === store.getters.CLIENT.id) {
-                // handlers.forEach(handler => handler(JSON.parse(message.body)))
-                if (m.hasOwnProperty('messageType')) {
-                    store.commit('changeMessage', m)
-                    let element = document.getElementById("messages")
-                    setTimeout(() => {
-                        if (element.scrollTop + element.clientHeight + 300 >= element.scrollHeight)
-                            element.scrollTop = element.scrollHeight
-                    }, 10)
-                } else if (m.hasOwnProperty('actual')) {
-                    store.commit('changeTask', m)
+            let element = document.getElementById("messages")
+            if (element) {
+                if (m.clientId === store.getters.CLIENT.id) {
+                    // handlers.forEach(handler => handler(JSON.parse(message.body)))
+                    if (m.hasOwnProperty('messageType')) {
+                        store.commit('changeMessage', m)
+                        setTimeout(() => {
+                            if (element.scrollTop + element.clientHeight + 300 >= element.scrollHeight)
+                                element.scrollTop = element.scrollHeight
+                        }, 10)
+                    } else if (m.hasOwnProperty('actual')) {
+                        store.commit('changeTask', m)
+                    }
                 }
+            } else if (document.getElementsByClassName('right-side-column')) {
+                if (m.hasOwnProperty('messageType'))
+                    store.commit('changeMainPageMessage', m)
+                else if(m.hasOwnProperty('actual'))
+                    store.commit('changeMainPageTask', m)
             }
         })
     })
 }
 
-export function addHandler(handler) {
-    handlers.push(handler)
-}
+// export function addHandler(handler) {
+//     handlers.push(handler)
+// }
 
 export function disconnect() {
     if (stompClient !== null) {
@@ -49,4 +56,9 @@ export function sendMessage(message) {
 
 export function sendTask(task) {
     stompClient.send("/app/changeTask", {}, JSON.stringify(task))
+}
+
+export function sendClient(client) {
+    console.log(client)
+    stompClient.send("/app/changeClient", {}, JSON.stringify(client))
 }
