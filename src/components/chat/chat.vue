@@ -18,6 +18,9 @@ export default {
     messages,
     replay,
   },
+  mounted() {
+    this.$store.state.page = this.$router.currentRoute.name
+  }
 }
 </script>
 

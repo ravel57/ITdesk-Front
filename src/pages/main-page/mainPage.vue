@@ -3,25 +3,44 @@
     <div class="right-side-column">
       <div v-for="(client, index) in clients">
         <router-link
-            class="client-card"
             :to="{name: 'chat', params: {id: client.id}}"
+            class="client-card"
+            :class="{ 'unreaded' : !client.readed}"
         >
+<!--          card-header-->
           <div class="client-card-info" style="border-bottom: 1px solid #adb2b2; display: flex ">
-            <span class="organization"> {{ client.organization }} </span>
-            <span class="name" v-text=""> {{ client.firstName + "  " + client.lastName }} </span>
-            <br>
+            <span
+                class="organization"
+                v-text="client.organization"
+            />
+            <span class="name" style="display: flex;">
+              <p v-if="client.firstName" style="margin-left: 3px;">{{ client.firstName }}</p>
+              <p v-if="client.lastName" style="margin-left: 3px;">{{ client.lastName }}</p>
+            </span>
           </div>
+
+<!--          card-tasks-->
           <div
-              v-for="task in client.tasks"
+              v-for="task in client.tasks.slice().reverse()"
               class="tasks-list"
           >
             <p>{{ task.text }}</p>
           </div>
+
+<!--          card-date-->
           <div class="client-card-info date" style="display: flex; border-top: 1px solid #adb2b2">
             <!--            <span class="date"> {{ getDif(client.lastMessageDateTime) }} </span>-->
-            <span class="date"> {{ getDif(index) }} </span>
-            <span class="date" style="margin-left: 0;"> {{ "(" + getClientLastMessageDateTime(client) + ")" }} </span>
+            <!--            <span class="date"> {{ getDif(index) }} </span>-->
+            <span
+                class="date"
+                :style="{color: dateTimeDifColor(client.lastMessageDateTime) }"
+            > {{ client.lastMessageDifTime }} </span>
+            <span
+                class="date"
+                style="margin-left: 0;"
+            > {{ "(" + getClientLastMessageDateTime(client) + ")" }} </span>
           </div>
+
         </router-link>
       </div>
     </div>
@@ -41,7 +60,9 @@ export default {
       //     firstName: "123",
       //     lastName: '123',
       //     organization: '',
-      //     lastMessageDateTime: 1619962500000,
+      //     lastMessageDifTime: 0,
+      //     lastMessageDateTime: 1620232769504,
+      //     lastMessageType: 'input',
       //     tasks: [{text: '123'}, {text: '123'}, {text: '123'},],
       //   },
       //   {
@@ -49,7 +70,9 @@ export default {
       //     firstName: "234",
       //     lastName: '243',
       //     organization: '',
+      //     lastMessageDifTime: 0,
       //     lastMessageDateTime: 1619962800000,
+      //     lastMessageType: 'output',
       //     tasks: [{text: '123'}, {text: '123'}, {text: '123'},],
       //   },
       // ],
@@ -59,27 +82,43 @@ export default {
   mounted: async function () {
     try {
       const divName = 'clients'
-      this.$store.state.clients =  JSON.parse(
+      this.$store.state.clients = JSON.parse(
           document.getElementById(divName).getAttribute(divName).replaceAll('\'', '\"')
       )
-      // console.log(this.$store.getters.CLIENTS)
-      // console.log(this.clients.firstName)
-      // console.log(this.clients.lastName)
-      // document.getElementById(divName).remove();
+      document.getElementById(divName).remove();
     } catch {
       await axios.get('/api/v1/clients/')
           .then(response => (this.$store.state.clients = response.data))
     }
+
+    this.$store.state.clients.forEach(e => {
+      e.lastMessageDateTime = new Date(e.lastMessageDateTime)
+      e.lastMessageDifTime = Date.now() - e.lastMessageDateTime
+    })
+    this.startDateTimeDif()
+    this.$store.state.page = this.$router.currentRoute.name
   },
+
 
   methods: {
     getClientLastMessageDateTime(client) {
-      let options = {month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'}
+      let options = {hour: 'numeric', minute: 'numeric', month: 'long', day: 'numeric'}
       return new Date(client.lastMessageDateTime).toLocaleDateString("ru-RU", options)
     },
-    getDif(index) {
-      let date = this.clients[index].lastMessageDateTime
-      console.log(Date.now())
+
+    startDateTimeDif() {
+      this.$store.state.clients.forEach(e => {
+        e.lastMessageDifTime = this.getDateTimeDif(e.lastMessageDateTime)
+      })
+      setInterval(() => {
+        this.$store.state.clients.forEach(e => {
+          e.lastMessageDifTime = this.getDateTimeDif(e.lastMessageDateTime)
+        })
+      }, 500);
+    },
+
+    getDateTimeDif(date) {
+      // let date = this.clients[index].lastMessageDateTime
       let out = ''
       let d = new Date(Date.now() - date)
       let b = false
@@ -99,18 +138,34 @@ export default {
         out += d.getUTCMinutes() + 'м '
         b = true
       }
-      if (d.getUTCSeconds() | b) {
-        out += d.getUTCSeconds() + 'c '
-      }
-      // if (!b) {
-      //   out = '< 1м'
+      // if (d.getUTCSeconds() | b) {
+      //   out += d.getUTCSeconds() + 'c '
+      // b = true
       // }
+      if (!b) {
+        out = '< 1м'
+      }
       return out
+    },
+
+    dateTimeDifColor(d) {
+      d = new Date((Date.now() - new Date(d)) / 60000)
+      // console.log(d)
+      if (d < 1) {
+        return 'cadetblue'
+      } else if (d < 5) {
+        return 'darkcyan'
+      } else if (d < 15) {
+        return 'coral'
+      } else {
+        return 'red'
+      }
     }
   },
 
   computed: {
     clients() {
+      // return this.clients()
       return this.$store.getters.CLIENTS
     },
 
@@ -199,6 +254,7 @@ body {
 .organization {
   margin-left: 10px;
   margin-right: auto;
+  /*color: darkcyan;*/
 }
 
 .name {
@@ -220,5 +276,10 @@ body {
   box-shadow: 0 0 2px 1px #adb2b2;
   background-color: #f2f8f8;
   /*font-weight: bold;*/
+}
+
+.unreaded {
+  font-weight: bold;
+  /*background: #d64040;*/
 }
 </style>

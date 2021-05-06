@@ -13,9 +13,16 @@
       <!--      <span class="filter_button">-->
       <!--          <a href="/"><img src="@/images/refresh.png" style="transform: scale(1.25)"></a>-->
       <!--      </span>-->
-      <span class="filter_button icon" @click="back">
+      <!--      <span class="filter_button icon" @click="back">-->
+      <!--        <p>arrow_back</p>-->
+      <!--      </span>-->
+      <router-link
+          :to="{name: 'main'}"
+          class="filter_button icon"
+          v-if="$store.getters.PAGE === 'chat'"
+      >
         <p>arrow_back</p>
-      </span>
+      </router-link>
       <span class="filter_button icon" @click="changeView">
         <p v-text="listViewTypes ? 'view_list' : 'dashboard'" href=""></p>
       </span>
@@ -53,6 +60,8 @@ export default {
     back() {
       history.back()
     }
+  },
+  mounted() {
   }
 
 }
@@ -83,6 +92,7 @@ export default {
   /*margin: auto;*/
   /*border-top: 1px solid rgba(0, 0, 0, 0.3);*/
   /*border-bottom: 1px solid rgba(0, 0, 0, 0.3);*/
+  justify-content: space-evenly;
 }
 
 /*div.inline {*/
@@ -99,6 +109,7 @@ export default {
 /*}*/
 
 .filter_button {
+  color: black;
   height: 100%;
   width: 18%;
   text-align: center;
@@ -108,6 +119,7 @@ export default {
   margin: 0 3px;
   cursor: pointer;
   user-select: none;
+  text-decoration: none;
 }
 
 .filter_button p {

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {isBoolean} from "vue-resource/src/util";
+import axios from "axios";
 
 Vue.use(Vuex)
 
@@ -9,7 +10,8 @@ export default new Vuex.Store({
         clients: [],
         messages: [],
         tasks: [],
-        client: {}
+        client: {},
+        page: '',
     },
 
     getters: {
@@ -24,6 +26,9 @@ export default new Vuex.Store({
         },
         CLIENTS: state => {
             return state.clients
+        },
+        PAGE: state => {
+            return state.page
         },
     },
 
@@ -69,13 +74,42 @@ export default new Vuex.Store({
             }
         },
 
-        changeMainPageMessage(state, message) {
+        async changeMainPageMessage(state, message) {
             let index = state.clients.findIndex(x => x.id === message.clientId)
-            state.clients[index].lastMessageDateTime = message.date
-            let tmp = state.clients[index]
-            state.clients.splice(index, 1)
-            state.clients.unshift(tmp)
+            if (index >= 0) {
+                state.clients[index].lastMessageDateTime = message.date
+                let tmp = state.clients[index]
+                state.clients.splice(index, 1)
+                state.clients.unshift(tmp)
+            } else {
+                let client = {
+                    id: '',
+                    firstName: '',
+                    lastName: '',
+                    organization: '',
+                    lastMessageDateTime: '',
+                    lastMessageType: '',
+                    lastMessageDifTime: '',
+                    tasks: '',
+                }
+                await axios.get('/api/v1/client/' + message.clientId)
+                    .then(response => {
+                        client.id = response.data.id
+                        client.firstName = response.data.firstName
+                        client.lastName = response.data.lastName
+                        client.organization = response.data.organization
+                        client.lastMessageDateTime = Date.now()
+                        client.lastMessageType = 'message client'
+                        client.lastMessageDifTime = 0
+                    })
+                await axios.get('/api/v1/tasks/' + message.clientId)
+                    .then(response => {
+                        client.tasks = response.data
+                        this.state.clients.unshift(client)
+                    })
+            }
         },
+
 
         changeMainPageTask(state, task) {
             // console.log(task)
@@ -84,7 +118,7 @@ export default new Vuex.Store({
             let index = state.clients[clientIndex].tasks.findIndex(t => t.id === task.id)
             // console.log(index)
             if (index >= 0) {
-                if (!task.actual){
+                if (!task.actual) {
                     state.clients[clientIndex].tasks.splice(index, 1)
                 }
             } else {
@@ -92,7 +126,6 @@ export default new Vuex.Store({
 
             }
         },
-
     },
 
     actions: {},

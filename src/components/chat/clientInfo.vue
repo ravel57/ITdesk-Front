@@ -5,6 +5,7 @@
         <div class="client" style="display: flex">
           <!--<p @click="changeFirstName" ref="firstName"> {{ firstName }} </p>-->
           <p
+              v-if="client.firstName"
               @click="firstNameEditable"
               @keydown.enter="changeFirstName"
               @keydown.esc="cancelChangeFirstName"
@@ -13,12 +14,33 @@
               v-text="client.firstName"
           />
           <p
+              v-else
+              @click="firstNameEditable"
+              @keydown.enter="changeFirstName"
+              @keydown.esc="cancelChangeFirstName"
+              ref="firstName"
+              :class="{'editable' : firstNameEditeble}"
+              style="color: #adb2b2"
+              v-text="'Имя'"
+          />
+          <p
+              v-if="client.lastName"
               @click="lastNameEditable"
               @keydown.enter="changeLastName"
               @keydown.esc="cancelChangeLastName"
               ref="lastName"
               :class="{'editable' : lastNameEditeble}"
               v-text="client.lastName"
+          />
+          <p
+              v-else
+              @click="lastNameEditable"
+              @keydown.enter="changeLastName"
+              @keydown.esc="cancelChangeLastName"
+              ref="lastName"
+              :class="{'editable' : lastNameEditeble}"
+              style="color: #adb2b2"
+              v-text="'Фамилия'"
           />
           <p style="font-size: 0.7em; margin-bottom: 6px;">
             {{ organization }}
@@ -81,6 +103,29 @@ export default {
   },
 
   methods: {
+    changeFirstName() {
+      this.$refs.firstName.setAttribute('contenteditable', 'false')
+      this.firstNameEditeble = false
+      this.client.firstName = this.$refs.firstName.innerText
+      sendClient(this.client)
+    },
+    changeLastName() {
+      this.$refs.lastName.setAttribute('contenteditable', 'false')
+      this.lastNameEditeble = false
+      this.client.lastName = this.$refs.lastName.innerText
+      sendClient(this.client)
+    },
+
+    firstNameEditable() {
+      this.$refs.firstName.setAttribute('contenteditable', 'true')
+      this.firstNameEditeble = true
+      console.log(this.firstNameEditeble)
+    },
+    lastNameEditable() {
+      this.$refs.lastName.setAttribute('contenteditable', 'true')
+      this.lastNameEditeble = true
+    },
+
     cancelChangeFirstName() {
       this.$refs.firstName.setAttribute('contenteditable', 'false')
       this.firstNameEditeble = false
@@ -90,27 +135,6 @@ export default {
       this.$refs.lastName.setAttribute('contenteditable', 'false')
       this.lastNameEditeble = false
       this.$refs.lastName.innerText = this.client.lastName
-    },
-    firstNameEditable() {
-      this.$refs.firstName.setAttribute('contenteditable', 'true')
-      this.firstNameEditeble = true
-      console.log(this.firstNameEditeble)
-    },
-    changeFirstName() {
-      this.$refs.firstName.setAttribute('contenteditable', 'false')
-      this.firstNameEditeble = false
-      this.client.firstName = this.$refs.firstName.innerText
-      sendClient(this.client)
-    },
-    lastNameEditable() {
-      this.$refs.lastName.setAttribute('contenteditable', 'true')
-      this.lastNameEditeble = true
-    },
-    changeLastName() {
-      this.$refs.lastName.setAttribute('contenteditable', 'false')
-      this.lastNameEditeble = false
-      this.client.lastName = this.$refs.lastName.innerText
-      sendClient(this.client)
     },
   },
 

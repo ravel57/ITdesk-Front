@@ -8,14 +8,15 @@ Vue.use(VueRouter)
 
 export default new VueRouter({
     mode: 'history',
-    routes: [{
-        path: '/dialogs',
-        name: 'main',
-        component: mainPage
-    }, {
-        path: '/dialogs/:id',
-        name: 'chat',
-        component: chatPage,
-    },
+    routes: [
+        {
+            path: '/dialogs',
+            name: 'main',
+            component: mainPage
+        }, {
+            path: '/dialogs/:id',
+            name: 'chat',
+            component: chatPage,
+        },
     ]
 })
