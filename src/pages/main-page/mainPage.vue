@@ -7,7 +7,7 @@
             class="client-card"
             :class="{ 'unreaded' : !client.readed}"
         >
-<!--          card-header-->
+          <!--          card-header-->
           <div class="client-card-info" style="border-bottom: 1px solid #adb2b2; display: flex ">
             <span
                 class="organization"
@@ -19,7 +19,7 @@
             </span>
           </div>
 
-<!--          card-tasks-->
+          <!--          card-tasks-->
           <div
               v-for="task in client.tasks.slice().reverse()"
               class="tasks-list"
@@ -27,13 +27,21 @@
             <p>{{ task.text }}</p>
           </div>
 
-<!--          card-date-->
+          <!--          card-date-->
           <div class="client-card-info date" style="display: flex; border-top: 1px solid #adb2b2">
-            <!--            <span class="date"> {{ getDif(client.lastMessageDateTime) }} </span>-->
-            <!--            <span class="date"> {{ getDif(index) }} </span>-->
+            <span
+                v-if="client.lastMessageType === 'message client'"
+                class="date icon"
+            > south_east </span>
+            <span
+                v-else-if="client.lastMessageType === 'message support'"
+                class="date icon"
+            > north_west </span>
+            <!--:style="{transform: (client.lastMessageType == 'message client' ? ': rotate(0deg);' : 'rotate(180deg)')}" v-text="input"-->
             <span
                 class="date"
                 :style="{color: dateTimeDifColor(client.lastMessageDateTime) }"
+                style="margin-left: 0;"
             > {{ client.lastMessageDifTime }} </span>
             <span
                 class="date"
@@ -96,7 +104,9 @@ export default {
       e.lastMessageDifTime = Date.now() - e.lastMessageDateTime
     })
     this.startDateTimeDif()
+
     this.$store.state.page = this.$router.currentRoute.name
+    this.$store.commit('clearChat')
   },
 
 
@@ -140,7 +150,7 @@ export default {
       }
       // if (d.getUTCSeconds() | b) {
       //   out += d.getUTCSeconds() + 'c '
-      // b = true
+      //   b = true
       // }
       if (!b) {
         out = '< 1м'

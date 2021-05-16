@@ -39,6 +39,8 @@ function  callback(message){
             store.commit('changeMainPageMessage', m)
         else if(m.hasOwnProperty('actual'))
             store.commit('changeMainPageTask', m)
+        else if(m.hasOwnProperty('userName'))
+            store.commit('changeMainPageClient', m)
     }
 }
 

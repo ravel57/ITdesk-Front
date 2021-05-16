@@ -18,7 +18,9 @@ export default {
     tasks
   },
 
-  mounted: () => {}
+  mounted: () => {
+
+  }
 
 }
 </script>

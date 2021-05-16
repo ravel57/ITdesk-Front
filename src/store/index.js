@@ -2,16 +2,51 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import {isBoolean} from "vue-resource/src/util";
 import axios from "axios";
+import messages from "@/components/chat/messages";
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
         clients: [],
-        messages: [],
-        tasks: [],
+        messages: [
+            // {
+            //     id: 0,
+            //     text: "123123123123",
+            //     date: Date.now(),
+            //     messageType: "support",
+            //     selected: false
+            // }, {
+            //     id: 1,
+            //     text: "456456456",
+            //     date: Date.now(),
+            //     messageType: "client",
+            //     selected: false
+            // }, {
+            //     id: 2,
+            //     text: "789789789",
+            //     date: Date.now(),
+            //     messageType: "support",
+            //     selected: false
+            // }, {
+            //     id: 3,
+            //     text: "15436127498",
+            //     date: Date.now(),
+            //     messageType: "client",
+            //     selected: false
+            // },
+        ],
+        tasks: [
+            // {id: 0, text: "123123", actual: true, messageId: null},
+            // {id: 1, text: "123123", actual: false, messageId: null},
+            // {id: 2, text: "123123", actual: true, messageId: null},
+            // {id: 3, text: "123123", actual: false, messageId: null},
+        ],
         client: {},
         page: '',
+        messageType: 'message support',
+        selectedMessages: [],
+        pinMessageToTaskActive: false,
     },
 
     getters: {
@@ -30,6 +65,15 @@ export default new Vuex.Store({
         PAGE: state => {
             return state.page
         },
+        MESSAGETYPE: state => {
+            return state.messageType
+        },
+        SELECTEDMESSAGES: state => {
+            return state.selectedMessages
+        },
+        pinMessageToTaskActive: state => {
+            return state.pinMessageToTaskActive
+        }
     },
 
     mutations: {
@@ -44,7 +88,6 @@ export default new Vuex.Store({
             // console.log('messages.length:', state.messages.length)
             if (payload.id >= state.messages.length) {
                 state.messages.push(payload)
-
             } else if (state.messages[payload.id].undelivered) {
                 state.messages[payload.id].undelivered = false
                 delete state.messages[payload.id].undelivered
@@ -74,10 +117,18 @@ export default new Vuex.Store({
             }
         },
 
+        clearChat(state) {
+            state.tasks = []
+            state.client = {}
+            state.messages = []
+            state.selectedMessages = []
+        },
+
         async changeMainPageMessage(state, message) {
             let index = state.clients.findIndex(x => x.id === message.clientId)
             if (index >= 0) {
                 state.clients[index].lastMessageDateTime = message.date
+                state.clients[index].readed = false
                 let tmp = state.clients[index]
                 state.clients.splice(index, 1)
                 state.clients.unshift(tmp)
@@ -91,6 +142,7 @@ export default new Vuex.Store({
                     lastMessageType: '',
                     lastMessageDifTime: '',
                     tasks: '',
+                    read: false
                 }
                 await axios.get('/api/v1/client/' + message.clientId)
                     .then(response => {
@@ -107,6 +159,7 @@ export default new Vuex.Store({
                         client.tasks = response.data
                         this.state.clients.unshift(client)
                     })
+                // console.log(client)
             }
         },
 
@@ -126,8 +179,82 @@ export default new Vuex.Store({
 
             }
         },
+
+        async changeMainPageClient(state, client) {
+            let index = state.clients.findIndex(x => x.id === client.id)
+            if (index >= 0) {
+                state.clients[index].lastName = client.lastName
+                state.clients[index].firstName = client.firstName
+                state.clients[index].organization = client.organization
+            } else {
+                // let client = {
+                //     id: '',
+                //     firstName: '',
+                //     lastName: '',
+                //     organization: '',
+                //     lastMessageDateTime: '',
+                //     lastMessageType: '',
+                //     lastMessageDifTime: '',
+                //     tasks: '',
+                //     readed: false
+                // }
+                // await axios.get('/api/v1/client/' + client.id)
+                //     .then(response => {
+                //         client.id = response.data.id
+                //         client.firstName = response.data.firstName
+                //         client.lastName = response.data.lastName
+                //         client.organization = response.data.organization
+                //         client.lastMessageDateTime = Date.now()
+                //         client.lastMessageType = 'message client'
+                //         client.lastMessageDifTime = 0
+                //     })
+                // await axios.get('/api/v1/tasks/' + client.id)
+                //     .then(response => {
+                //         client.tasks = response.data
+                //         this.state.clients.unshift(client)
+                //     })
+                // console.log(client)
+            }
+        },
+
+        changeMessageType(state, newType) {
+            if (state.messageType === 'message support') {
+                state.messageType = 'comment'
+            } else if (state.messageType === 'comment') {
+                state.messageType = 'message support'
+            }
+        },
+
+        selectMessage(state, id) {
+            if (!this.state.messages[id].selected) {
+                state.messages[id].selected = true
+                state.selectedMessages.push(id)
+            } else {
+                state.messages[id].selected = false
+                state.selectedMessages.splice(this.state.selectedMessages.indexOf(id), 1)
+            }
+        },
+
+        pinMessageToTask(state, id) {
+            state.pinMessageToTaskActive = true
+            // console.log(state.tasks[id])
+            // console.log(state.pinMessageToTaskActive)
+            // state.tasks[id].messageId = Math.min.apply(Math, state.selectedMessages)
+        },
+
+        selectTask(state, taskId) {
+            state.tasks[taskId].messageId = Math.min.apply(Math, state.selectedMessages)
+            this.commit('removeSelection')
+        },
+
+        removeSelection(state) {
+            state.pinMessageToTaskActive = false
+            state.selectedMessages.forEach(element => this.state.messages[element].selected = false)
+            state.selectedMessages = []
+        },
     },
 
     actions: {},
+
     modules: {},
 })

@@ -2,12 +2,23 @@
   <div id="messages" ref="messages">
     <div
         v-for="(message) in messages"
-        :text="message.text"
         :key="message.id"
-        :class="[message.undelivered ? ' undelivered' : '',  message.messageType]"
         :id="message.id"
+        class="message"
+        :class="[message.undelivered ? ' undelivered' : '', message.selected ? 'selected' : '',  message.messageType]"
     >
-      {{ message.text }}
+      <div v-text="message.text"/>
+      <div style="height: 10px; margin-top: 18px">
+        <div
+            class="date"
+            v-text="getMessageDateTime(message.date)"
+        />
+        <div
+            class="icon check-mark"
+            @click="selectMessage(message.id)"
+        > check_circle
+        </div>
+      </div>
     </div>
 
   </div>
@@ -24,7 +35,17 @@ export default {
     return {}
   },
 
-  methods: {},
+  methods: {
+    getMessageDateTime(date) {
+      let options = {hour: 'numeric', minute: 'numeric', month: 'long', day: 'numeric'}
+      return new Date(date).toLocaleDateString("ru-RU", options)
+    },
+
+    selectMessage(id){
+      // console.log(id)
+      this.$store.commit('selectMessage', id)
+    }
+  },
 
   mounted: async function () {
     try {
@@ -38,7 +59,7 @@ export default {
     }
     setTimeout(() => {
       let element = document.getElementById('messages')
-      element.scrollTop = element.scrollHeight;
+      element.scrollTop = element.scrollHeight + 50
     }, 1)
   },
 
@@ -52,6 +73,7 @@ export default {
 </script>
 
 <style scoped>
+
 #messages {
   width: 100%;
   overflow: auto;
@@ -63,14 +85,13 @@ export default {
   flex-direction: column;
 }
 
-
 .message {
   /*float: left;*/
   min-width: 100px;
   /*width: 40vw;*/
   max-width: 400px;
   border: 1px solid #adb2b2;
-  border-radius: 3px;
+  border-radius: 10px;
   padding: 10px;
   word-wrap: break-word;
   /*float: right;*/
@@ -87,7 +108,7 @@ export default {
   word-wrap: break-word;
 }
 
-.message.client {
+.message .client {
   /*float: right;*/
   margin-left: 10px;
   margin-right: auto;
@@ -95,15 +116,21 @@ export default {
   /*word-wrap: break-word;*/
 }
 
-
-.message.support {
+.message .support {
   margin-left: auto;
   margin-right: 10px;
   background: #f2eaff;
   /*word-wrap: break-word;*/
 }
 
-.message.support.undelivered {
+.message .comment {
+  margin-left: 100px;
+  margin-right: auto;
+  background: #fbc0ffad;
+  /*word-wrap: break-word;*/
+}
+
+.message .support .undelivered {
   background: #fbfcff;
 }
 
@@ -112,69 +139,29 @@ export default {
   overflow: auto;
 }
 
-.reply {
-  display: flex;
-  /*background: blueviolet;*/
-  padding: 10px;
-  min-height: 30px;
-  height: 100%;
-  max-height: 100px;
-  /* position: absolute; */
-  /* bottom: 0; */
-  /*width: 100%;*/
-  margin-bottom: 0;
+.date {
+  margin-left: auto;
+  margin-right: 10px;
+  position: revert;
+  font-size: 10px;
+  left: 100px;
 }
 
-/*.reply .input {*/
-/*    height: 100%;*/
-/*    width: calc(100% - 50px);*/
-/*    !*width: 100%;*!*/
-/*    !*max-width: 100%;*!*/
-/*    border: 1px solid #adb2b2;*/
-/*    padding: 10px;*/
-/*    overflow: auto;*/
-/*    box-sizing: border-box;*/
-/*}*/
-
-.reply .input-textarea {
-  margin: 0px;
-  padding: 5px;
-  width: 100%;
-  height: 100%;
-  resize: none;
-  font-size: 16px;
+.check-mark {
+  display: none;
 }
 
-.reply .send-button {
-  /*width: 50px;*/
-  background: darkcyan;
-  justify-content: center;
-  align-items: center;
-  font-size: 4em;
-  color: white;
-  height: auto;
-  cursor: pointer;
-  user-select: none;
+.message:hover .check-mark {
+  display: block;
+  position: relative;
+  transform: scale(0.5);
+  top: -30px;
+  width: 10px;
+  margin-left: auto;
+  margin-right: 7px;
 }
 
-.icon {
-  font-size: 40px;
-  font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  display: inline-block;
-  line-height: 1.26;
-  text-transform: none;
-  letter-spacing: normal;
-  justify-content: center;
-  display: flex;
-  /*color: #fff;*/
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'liga';
+.message .selected{
+  background: #d64040;
 }
 </style>

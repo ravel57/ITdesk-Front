@@ -2,12 +2,15 @@
   <div class="reply">
         <textarea class="input-textarea"
                   v-model="messageText"
-                  placeholder="Сообщение"
+                  :placeholder="placeholder"
                   @keydown.ctrl.enter="sendMessage"
                   type="text"
-        ></textarea>
-    <div class="reply send-button">
+                  ref="replay"
+                  :style="{ 'background': messageTextareaColor }"
+        />
+    <div class="reply send-button" style="display: block">
       <span class="icon" style="color: #fff" @click="sendMessage">send</span>
+      <span class="icon comment" style="color: #fff" @click="changeMessageType">{{ messageType }}</span>
     </div>
   </div>
 </template>
@@ -24,9 +27,17 @@ export default {
   // },
   data() {
     return {
-      'messageText': '',
+      messageText: '',
+      messageTextareaColor: '',
+      placeholder: 'Сообщение'
     }
   },
+
+  mounted() {
+    this.$refs.replay.focus()
+  },
+
+
   methods: {
     sendMessage() {
       if (this.messageText > '') {
@@ -35,7 +46,8 @@ export default {
           clientId: this.$store.getters.CLIENT.id,
           supportId: 1,
           text: this.messageText,
-          messageType: "message support"
+          messageType: this.$store.getters.MESSAGETYPE.replace('message ',''),
+          date: Date.now()
         }
         this.$store.commit('newMessage', newMessage)
         try {
@@ -46,13 +58,36 @@ export default {
         this.messageText = ''
 
         let element = document.getElementById("messages")
-        let h = element.scrollHeight
         setTimeout(() => {
-          if (element.scrollTop + element.clientHeight + 300 >= h)
-            element.scrollTop = element.scrollHeight
+          element.scrollTop = element.scrollHeight
         }, 20)
         // console.log(element.scrollHeight)
       }
+    },
+
+    changeMessageType() {
+      this.$store.commit('changeMessageType', '')
+      if (this.$store.getters.MESSAGETYPE === 'comment') {
+        this.messageTextareaColor = 'aquamarine'
+        this.placeholder = 'Комментарий'
+      }
+      else if (this.$store.getters.MESSAGETYPE === 'message support') {
+        this.messageTextareaColor = 'white'
+        this.placeholder = 'Сообщение'
+      }
+    }
+  },
+
+  computed: {
+    messageType() {
+      return this.$store.getters.MESSAGETYPE.replace(' support', '')
+    },
+
+    messageTextareaColor() {
+      if (this.messageType() === 'comment')
+        return 'black'
+      else if (this.messageType() === 'message support')
+        return 'white'
     }
   }
 }
@@ -104,5 +139,8 @@ export default {
   user-select: none;
 }
 
+.comment {
+  transform: scale(-0.5, 0.5);
+}
 
 </style>

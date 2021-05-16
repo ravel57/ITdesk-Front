@@ -2,69 +2,64 @@
   <div class="client-info">
     <div style="display: flex">
       <div>
-        <div class="client" style="display: flex">
+        <span class="client" style="display: flex">
           <!--<p @click="changeFirstName" ref="firstName"> {{ firstName }} </p>-->
-          <p
-              v-if="client.firstName"
+          <span
               @click="firstNameEditable"
               @keydown.enter="changeFirstName"
               @keydown.esc="cancelChangeFirstName"
-              ref="firstName"
               :class="{'editable' : firstNameEditeble}"
-              v-text="client.firstName"
-          />
-          <p
-              v-else
-              @click="firstNameEditable"
-              @keydown.enter="changeFirstName"
-              @keydown.esc="cancelChangeFirstName"
-              ref="firstName"
-              :class="{'editable' : firstNameEditeble}"
-              style="color: #adb2b2"
-              v-text="'Имя'"
-          />
-          <p
-              v-if="client.lastName"
+              ref="firstName">
+            <p
+                v-if="client.firstName"
+                v-text="client.firstName"
+            />
+            <p
+                v-else
+                style="color: #adb2b2"
+                v-text="'Имя'"
+            />
+          </span>
+          <span
               @click="lastNameEditable"
               @keydown.enter="changeLastName"
               @keydown.esc="cancelChangeLastName"
               ref="lastName"
               :class="{'editable' : lastNameEditeble}"
-              v-text="client.lastName"
-          />
-          <p
-              v-else
-              @click="lastNameEditable"
-              @keydown.enter="changeLastName"
-              @keydown.esc="cancelChangeLastName"
-              ref="lastName"
-              :class="{'editable' : lastNameEditeble}"
-              style="color: #adb2b2"
-              v-text="'Фамилия'"
-          />
+          >
+            <p
+                v-if="client.lastName"
+                v-text="client.lastName"
+            />
+            <p
+                v-else
+                style="color: #adb2b2"
+                v-text="'Фамилия'"
+            />
+          </span>
           <p style="font-size: 0.7em; margin-bottom: 6px;">
             {{ organization }}
           </p>
-        </div>
-        <!--<div style="display: flex">-->
-        <!--  <div class="client-field">-->
-        <!--    Кастомное поле 1-->
-        <!--  </div>-->
-        <!--  <div class="client-field">-->
-        <!--    Кастомное поле 2-->
-        <!--  </div>-->
-        <!--  <div class="client-field">-->
-        <!--    Кастомное поле 3-->
-        <!--  </div>-->
-        <!--  <div class="client-field">-->
-        <!--    Кастомное поле 4-->
-        <!--  </div>-->
-        <!--</div>-->
+        </span>
+<!--        <div style="display: flex">-->
+<!--          <div class="client-field"> Кастомное поле 1 </div>-->
+<!--          <div class="client-field"> Кастомное поле 2 </div>-->
+<!--          <div class="client-field"> Кастомное поле 3 </div>-->
+<!--          <div class="client-field"> Кастомное поле 4 </div>-->
+<!--        </div>-->
       </div>
       <div style="margin-left: auto; margin-right: 10px; color: #000; margin-top: auto;" class="icon">
         search
       </div>
     </div>
+    <div style="height: 20px" v-if="selectedMessages.length">
+      <button @click="pinMessageToTask">Прикрепить к задаче</button>
+      <button @click="removeSelection">Снять выделение</button>
+      {{ selectedMessages }}
+      {{ 'pinMessageToTaskActiv: ' + this.$store.getters.pinMessageToTaskActive }}
+      {{ '[' + this.$store.getters.SELECTEDMESSAGES.length + ']' }}
+    </div>
+    <div v-else style="height: 20px"/>
   </div>
 </template>
 
@@ -94,7 +89,8 @@ export default {
   mounted: async function () {
     try {
       const divName = 'client'
-      this.$store.state.client = JSON.parse(document.getElementById(divName).getAttribute(divName).replaceAll('\'', '\"'))
+      this.$store.state.client = JSON.parse(document.getElementById(divName)
+          .getAttribute(divName).replaceAll('\'', '\"'))
       document.getElementById(divName).remove();
     } catch {
       await axios.get('/api/v1/client/' + this.$route.params.id)
@@ -103,6 +99,14 @@ export default {
   },
 
   methods: {
+    pinMessageToTask() {
+      this.$store.commit('pinMessageToTask')
+    },
+
+    removeSelection() {
+      this.$store.commit('removeSelection')
+    },
+
     changeFirstName() {
       this.$refs.firstName.setAttribute('contenteditable', 'false')
       this.firstNameEditeble = false
@@ -151,11 +155,13 @@ export default {
     //   return this.$store.getters.CLIENT.lastName
     // },
     organization() {
-      // return this.client.organization
       return this.$store.getters.CLIENT.organization
     },
     firstNameEditeble() {
       return this.client.firstNameEditeble
+    },
+    selectedMessages() {
+      return this.$store.getters.SELECTEDMESSAGES
     }
   }
 
@@ -179,13 +185,13 @@ export default {
 }
 
 .client-info p {
-  margin: 1px 10px;
+  margin: 1px 5px;
 }
 
 .editable {
   border: 1px solid red;
   border-radius: 3px;
-  margin: 0px 9px;
+  margin: 0 4px;
 }
 
 .client-info .client-field {
@@ -195,4 +201,8 @@ export default {
   margin: 1px 3px;
 }
 
+button {
+  height: 20px;
+  margin: 1px;
+}
 </style>

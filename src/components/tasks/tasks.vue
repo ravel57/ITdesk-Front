@@ -17,24 +17,30 @@
     </div>
 
     <div
+        v-for="task in tasks.slice().reverse()"
         class="check-box"
-        v-for="(checkBox, index) in tasks.slice().reverse()"
-        :class="[checkBox.actual ? '' : 'closed', checkBox.undelivered ? 'undelivered' : '']"
-        :key="checkBox.id"
+        :class="[task.actual ? '' : 'closed', task.undelivered ? 'undelivered' : '']"
+        :key="task.id"
+        @click="taskClick(task.id)"
     >
-      {{ checkBox.text }}
-      <span
-          v-text="checkBox.actual ? 'x' : '+'"
-          @click="changeTaskStatus(checkBox.id)"
-          class="task-button"
-      ></span>
+<!--      <div >-->
+        <span
+            v-text="task.actual ? 'закрыть' : 'открыть'"
+            @click="changeTaskStatus(task.id)"
+            class="task-button"
+        />
+        <p
+            v-text="task.text"
+            :style="{fontWeight: isPinMessageToTaskActive}"
+        />
+<!--      </div>-->
     </div>
 
   </div>
 </template>
 
 <script>
-import {sendTask} from "@/util/ws";
+import {sendMessage, sendTask} from "@/util/ws";
 import axios from "axios";
 
 export default {
@@ -43,6 +49,32 @@ export default {
   data() {
     return {
       newTaskInput: '',
+    }
+  },
+
+  mounted: async function () {
+    try {
+      const divName = 'inptsks'
+      this.$store.state.tasks = JSON.parse(document.getElementById(divName)
+          .getAttribute('tasks').replaceAll('\'', '\"'))
+      document.getElementById(divName).remove();
+    } catch {
+      await axios.get('/api/v1/tasks/' + this.$route.params.id)
+          .then(response => (this.$store.state.tasks = response.data))
+    }
+    // console.log(this.$store.state.tasks)
+  },
+
+  computed: {
+    tasks() {
+      return this.$store.getters.TASKS
+    },
+
+    isPinMessageToTaskActive() {
+      if (this.$store.getters.pinMessageToTaskActive && this.$store.getters.SELECTEDMESSAGES.length > 0)
+        return "bold"
+      else
+        return ""
     }
   },
 
@@ -59,7 +91,7 @@ export default {
         try {
           sendTask(newTask)
         } catch {
-          alert('server error')
+          // alert('server error')
         }
         this.newTaskInput = ''
       }
@@ -73,30 +105,27 @@ export default {
       sendTask(task)
     },
 
-    actClass(index) {
-      return this.$store.getters.TASKS[index].actual ? '' : 'closed'
+    // actClass(index) {
+    //   return this.$store.getters.TASKS[index].actual ? '' : 'closed'
+    // },
+
+    taskClick(id) {
+      if (!this.$store.getters.pinMessageToTaskActive && this.$store.getters.SELECTEDMESSAGES.length === 0) {
+        if (this.$store.getters.TASKS[id].messageId !== null) {
+          window.location.replace('#' + this.$store.getters.TASKS[id].messageId)
+        }
+        // console.log(this.$store.getters.TASKS[id].messageId)
+      } else {
+        this.$store.commit('selectTask', id)
+        try {
+          sendTask(this.$store.getters.TASKS[id])
+          console.log(this.$store.getters.TASKS[id])
+        } catch {
+          alert('server error')
+        }
+      }
     },
 
-  },
-
-  computed: {
-    tasks() {
-      return this.$store.getters.TASKS
-    },
-
-
-  },
-
-  mounted: async function () {
-    try {
-      const divName = 'inptsks'
-      this.$store.state.tasks = JSON.parse(document.getElementById(divName)
-          .getAttribute('tasks').replaceAll('\'', '\"'))
-      document.getElementById(divName).remove();
-    } catch {
-      await axios.get('/api/v1/tasks/' + this.$route.params.id)
-          .then(response => (this.$store.state.tasks = response.data))
-    }
   },
 }
 </script>
@@ -114,9 +143,10 @@ export default {
   border-radius: 5px;
   margin: 10px;
   padding: 3px;
-  display: flex;
+  /*display: flex;*/
   background: #7fffd4;
   overflow-wrap: anywhere;
+  cursor: pointer;
 }
 
 .check-box.undelivered {
@@ -125,10 +155,12 @@ export default {
 
 .check-box:hover {
   background: #65dbb5;
+  position: relative;
+  z-index: 0;
 }
 
 .check-box:hover .task-button {
-  display: flex;
+  display: block;
 }
 
 .task-button {
@@ -136,24 +168,35 @@ export default {
   margin-left: auto;
   margin-right: 5px;
   cursor: pointer;
-  border: 1px solid #adb2b2;
-  box-sizing: border-box;
-  border-radius: 50%;
+  /* border: 1px solid #adb2b2; */
+  /* box-sizing: border-box; */
+  /* border-radius: 50%; */
   text-align: center;
-  font-weight: normal;
+  font-weight: 400;
   font-size: 12px;
-  box-shadow: 0 0 2px #000000;
+  box-shadow: 0 0 2px #000;
   padding: 0 5px;
-  max-height: 16px;
+  /* max-height: 16px; */
+  max-width: 70px;
+  position: relative;
+  z-index: 2;
 }
 
-.closed {
+.task-button:hover{
+  background: #5dba9c;
+}
+
+.closed .task-button:hover{
+  background: #500101;
+}
+
+.check-box.closed {
   text-decoration: line-through;
   background: #d64040;
   color: #f7ede2;
 }
 
-.closed:hover {
+.check-box.closed:hover {
   background: darkred;
 }
 
