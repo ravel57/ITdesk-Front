@@ -108,7 +108,7 @@ export default {
   word-wrap: break-word;
 }
 
-.message .client {
+.message.client {
   /*float: right;*/
   margin-left: 10px;
   margin-right: auto;
@@ -116,24 +116,30 @@ export default {
   /*word-wrap: break-word;*/
 }
 
-.message .support {
+.message.support {
   margin-left: auto;
   margin-right: 10px;
   background: #f2eaff;
   /*word-wrap: break-word;*/
 }
 
-.message .comment {
-  margin-left: 100px;
-  margin-right: auto;
-  background: #fbc0ffad;
-  /*word-wrap: break-word;*/
-}
-
-.message .support .undelivered {
+.message.support.undelivered {
   background: #fbfcff;
 }
 
+.message.comment {
+  margin-left: 100px;
+  margin-right: auto;
+  background: #fbc0ff;
+  /*word-wrap: break-word;*/
+}
+
+.message.comment.undelivered {
+   margin-left: 100px;
+   margin-right: auto;
+   background: #fbc0ffad;
+   /*word-wrap: break-word;*/
+ }
 .message p {
   margin: 0;
   overflow: auto;
@@ -161,7 +167,15 @@ export default {
   margin-right: 7px;
 }
 
-.message .selected{
-  background: #d64040;
+.message.client.selected {
+  background: #8cd078;
+}
+
+.message.support.selected{
+  background: #876cb1;
+}
+
+.message.comment.selected{
+  background: #c589c9;
 }
 </style>

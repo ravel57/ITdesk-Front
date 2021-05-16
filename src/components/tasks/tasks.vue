@@ -91,7 +91,7 @@ export default {
         try {
           sendTask(newTask)
         } catch {
-          // alert('server error')
+          alert('server error')
         }
         this.newTaskInput = ''
       }
@@ -183,7 +183,7 @@ export default {
 }
 
 .task-button:hover{
-  background: #5dba9c;
+  background: #28c593;
 }
 
 .closed .task-button:hover{
