@@ -6,6 +6,7 @@
         :id="message.id"
         class="message"
         :class="[message.undelivered ? ' undelivered' : '', message.selected ? 'selected' : '',  message.messageType]"
+        @contextmenu="messageContextMenu(message.id)"
     >
       <div v-text="message.text"/>
       <div style="height: 10px; margin-top: 18px">
@@ -44,6 +45,10 @@ export default {
     selectMessage(id){
       // console.log(id)
       this.$store.commit('selectMessage', id)
+    },
+
+    messageContextMenu(id){
+
     }
   },
 
@@ -112,7 +117,7 @@ export default {
   /*float: right;*/
   margin-left: 10px;
   margin-right: auto;
-  background: #edffea;
+  background: #e8ffe4;
   /*word-wrap: break-word;*/
 }
 
@@ -128,7 +133,7 @@ export default {
 }
 
 .message.comment {
-  margin-left: 100px;
+  margin-left: 10%;
   margin-right: auto;
   background: #fbc0ff;
   /*word-wrap: break-word;*/

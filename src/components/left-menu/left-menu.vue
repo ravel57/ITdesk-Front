@@ -1,47 +1,37 @@
 <template>
-  <div id="left-side">
+  <div id="left-side" :class="{'hide-menu': hideMenu}">
     <div id="filters">
-      <!--      <span class="filter_button">-->
-      <!--          <img src="@/images/toList.png" style="transform: scale(0.85)">-->
-      <!--      </span>-->
-      <!--      <span class="filter_button">-->
-      <!--          <img src="@/images/viewSettings.png" style="margin: 8px 0; transform: scale(1.1);">-->
-      <!--      </span>-->
-      <!--      <span class="filter_button">-->
-      <!--          <img src="@/images/search.png" style="transform: scale(0.8)">-->
-      <!--      </span>-->
-      <!--      <span class="filter_button">-->
-      <!--          <a href="/"><img src="@/images/refresh.png" style="transform: scale(1.25)"></a>-->
-      <!--      </span>-->
-      <!--      <span class="filter_button icon" @click="back">-->
-      <!--        <p>arrow_back</p>-->
-      <!--      </span>-->
       <router-link
           :to="{name: 'main'}"
           class="filter_button icon"
           v-if="$store.getters.PAGE === 'chat'"
+          style="margin-left: 0"
       >
-        <p>arrow_back</p>
+        <!--arrow_back-->
+        <p>home</p>
       </router-link>
-      <span class="filter_button icon" @click="changeView">
-        <p v-text="listViewTypes ? 'view_list' : 'dashboard'" href=""></p>
-      </span>
-      <span class="filter_button icon">
-        <p style="top: -7px;">settings_suggest</p>
-      </span>
-      <span class="filter_button icon">
-        <p>search</p>
-      </span>
-      <span class="filter_button icon">
-        <a href="" style="text-decoration: none; color: #000">refresh</a>
-      </span>
+<!--      <span class="filter_button icon" @click="changeView">-->
+<!--        <p v-text="listViewTypes ? 'view_list' : 'dashboard'" href=""></p>-->
+<!--      </span>-->
+<!--      <span-->
+<!--          class="filter_button icon"-->
+<!--      ><p style="top: -7px;">settings_suggest</p>-->
+<!--      </span>-->
+<!--      <span-->
+<!--          class="filter_button icon"-->
+<!--          style="margin-right: 0">-->
+<!--        <p>search</p>-->
+<!--      </span>-->
+      <!--      <span class="filter_button icon">-->
+      <!--        <a href="" style="text-decoration: none; color: #000">refresh</a>-->
+      <!--      </span>-->
     </div>
-    <div class="left-side-menu-component">1</div>
-    <div class="left-side-menu-component">2</div>
-    <div class="left-side-menu-component">3</div>
-    <div class="left-side-menu-component">4</div>
-    <div class="left-side-menu-component">5</div>
-    <div class="left-side-menu-component">6</div>
+<!--    <div class="left-side-menu-component">1</div>-->
+<!--    <div class="left-side-menu-component">2</div>-->
+<!--    <div class="left-side-menu-component">3</div>-->
+<!--    <div class="left-side-menu-component">4</div>-->
+<!--    <div class="left-side-menu-component">5</div>-->
+<!--    <div class="left-side-menu-component">6</div>-->
   </div>
 </template>
 
@@ -50,17 +40,27 @@ export default {
   name: "leftMenu",
   data() {
     return {
-      listViewTypes: true
+      listViewTypes: true,
     }
   },
+
   methods: {
     changeView() {
       this.listViewTypes = !this.listViewTypes;
     },
+
     back() {
       history.back()
+    },
+
+  },
+
+  computed: {
+    hideMenu() {
+      return this.$store.getters.hideMenu
     }
   },
+
   mounted() {
   }
 
@@ -82,9 +82,9 @@ export default {
 
 #filters {
   height: 40px;
-  width: 250px;
+  width: 240px;
   /*width: 250px;*/
-  margin: 5px 0;
+  margin: 5px;
   /*border: 0 solid #adb2b2;*/
   /*box-sizing: border-box;*/
   border-radius: 3px;
@@ -92,7 +92,8 @@ export default {
   /*margin: auto;*/
   /*border-top: 1px solid rgba(0, 0, 0, 0.3);*/
   /*border-bottom: 1px solid rgba(0, 0, 0, 0.3);*/
-  justify-content: space-evenly;
+  /*justify-content: space-evenly;*/
+  justify-content: space-between;
 }
 
 /*div.inline {*/
@@ -111,7 +112,8 @@ export default {
 .filter_button {
   color: black;
   height: 100%;
-  width: 18%;
+  width: 100%;
+  /*width: 18%;*/
   text-align: center;
   border: 1px solid #adb2b2;
   box-sizing: border-box;
@@ -169,10 +171,24 @@ button {
 /*    }*/
 /*}*/
 
+#left-side.hide-menu {
+  display: none;
+}
+
 @media screen and (max-width: 992px) {
+
   #left-side {
     display: none;
   }
+
+  #left-side.hide-menu {
+    display: block;
+    z-index: 1;
+    position: absolute;
+    height: calc(100% - 43px);
+    background: #fff;
+  }
+
 }
 
 </style>

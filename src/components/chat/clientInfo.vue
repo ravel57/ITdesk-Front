@@ -48,18 +48,19 @@
 <!--          <div class="client-field"> Кастомное поле 4 </div>-->
 <!--        </div>-->
       </div>
-      <div style="margin-left: auto; margin-right: 10px; color: #000; margin-top: auto;" class="icon">
-        search
-      </div>
+<!--      <div style="margin-left: auto; margin-right: 10px; color: #000; margin-top: auto;" class="icon">-->
+<!--        search-->
+<!--      </div>-->
     </div>
     <div style="height: 20px" v-if="selectedMessages.length">
       <button @click="pinMessageToTask">Прикрепить к задаче</button>
       <button @click="removeSelection">Снять выделение</button>
-      {{ selectedMessages }}
-      {{ 'pinMessageToTaskActiv: ' + this.$store.getters.pinMessageToTaskActive }}
+<!--      {{ selectedMessages }}-->
+<!--      {{ 'pinMessageToTaskActiv: ' + this.$store.getters.pinMessageToTaskActive }}-->
       {{ '[' + this.$store.getters.SELECTEDMESSAGES.length + ']' }}
     </div>
     <div v-else style="height: 20px"/>
+
   </div>
 </template>
 

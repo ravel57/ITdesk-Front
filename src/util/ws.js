@@ -18,7 +18,7 @@ export function connect() {
 }
 
 
-function  callback(message){
+function callback(message) {
     let m = JSON.parse(message.body)
     let element = document.getElementById("messages")
     if (element) {
@@ -34,12 +34,12 @@ function  callback(message){
                 store.commit('changeTask', m)
             }
         }
-    } else if (document.getElementsByClassName('right-side-column')) {
+    } else if (document.getElementsByClassName('client-cards-column')) {
         if (m.hasOwnProperty('messageType'))
             store.commit('changeMainPageMessage', m)
-        else if(m.hasOwnProperty('actual'))
+        else if (m.hasOwnProperty('actual')) {
             store.commit('changeMainPageTask', m)
-        else if(m.hasOwnProperty('userName'))
+        } else if (m.hasOwnProperty('userName'))
             store.commit('changeMainPageClient', m)
     }
 }

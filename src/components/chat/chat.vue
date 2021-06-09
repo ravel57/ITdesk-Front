@@ -13,14 +13,17 @@ import replay from "@/components/chat/replay";
 
 export default {
   name: "chat",
+
   components: {
     clientInfo,
     messages,
     replay,
   },
+
   mounted() {
     this.$store.state.page = this.$router.currentRoute.name
   }
+
 }
 </script>
 

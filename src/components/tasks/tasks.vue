@@ -12,8 +12,7 @@
       <button
           v-on:click="addTask"
           style="display: block; width: 100%; margin-top: 3px;"
-      >добавить
-      </button>
+      >Добавить</button>
     </div>
 
     <div
@@ -31,7 +30,7 @@
         />
         <p
             v-text="task.text"
-            :style="{fontWeight: isPinMessageToTaskActive}"
+            :class="isPinMessageToTaskActive ? 'pinning' : ''"
         />
 <!--      </div>-->
     </div>
@@ -72,9 +71,7 @@ export default {
 
     isPinMessageToTaskActive() {
       if (this.$store.getters.pinMessageToTaskActive && this.$store.getters.SELECTEDMESSAGES.length > 0)
-        return "bold"
-      else
-        return ""
+        return true
     }
   },
 
@@ -144,7 +141,7 @@ export default {
   margin: 10px;
   padding: 3px;
   /*display: flex;*/
-  background: #7fffd4;
+  background: #c0ffea;
   overflow-wrap: anywhere;
   cursor: pointer;
 }
@@ -154,7 +151,7 @@ export default {
 }
 
 .check-box:hover {
-  background: #65dbb5;
+  background: #b3ffe9;
   position: relative;
   z-index: 0;
 }
@@ -192,12 +189,12 @@ export default {
 
 .check-box.closed {
   text-decoration: line-through;
-  background: #d64040;
-  color: #f7ede2;
+  background: #e4dddd;
+  color: #989898;
 }
 
 .check-box.closed:hover {
-  background: darkred;
+  background: #d7d1d1;
 }
 
 .task-input {
@@ -207,5 +204,10 @@ export default {
   padding: 5px;
   width: 100%;
   resize: vertical;
+}
+
+pinning {
+  background: cornflowerblue;
+  color: #f0fff7;
 }
 </style>

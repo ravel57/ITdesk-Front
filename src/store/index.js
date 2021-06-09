@@ -37,16 +37,17 @@ export default new Vuex.Store({
             // },
         ],
         tasks: [
-            // {id: 0, text: "123123", actual: true, messageId: null},
-            // {id: 1, text: "123123", actual: false, messageId: null},
-            // {id: 2, text: "123123", actual: true, messageId: null},
-            // {id: 3, text: "123123", actual: false, messageId: null},
+            // {id: 0, text: "123123", actual: true, messageId: null , lastMessageDateTime: Date.now},
+            // {id: 1, text: "123123", actual: false, messageId: null, lastMessageDateTime: Date.now},
+            // {id: 2, text: "123123", actual: true, messageId: null , lastMessageDateTime: Date.now},
+            // {id: 3, text: "123123", actual: false, messageId: null, lastMessageDateTime: Date.now},
         ],
         client: {},
         page: '',
         messageType: 'message support',
         selectedMessages: [],
         pinMessageToTaskActive: false,
+        hideMenu: false,
     },
 
     getters: {
@@ -73,7 +74,10 @@ export default new Vuex.Store({
         },
         pinMessageToTaskActive: state => {
             return state.pinMessageToTaskActive
-        }
+        },
+        hideMenu: state => {
+            return state.hideMenu
+        },
     },
 
     mutations: {
@@ -118,17 +122,19 @@ export default new Vuex.Store({
         },
 
         clearChat(state) {
-            state.tasks = []
             state.client = {}
             state.messages = []
+            state.tasks = []
             state.selectedMessages = []
+            state.messageType = 'message support'
         },
 
         async changeMainPageMessage(state, message) {
             let index = state.clients.findIndex(x => x.id === message.clientId)
             if (index >= 0) {
                 state.clients[index].lastMessageDateTime = message.date
-                state.clients[index].readed = false
+                state.clients[index].lastMessageType = message.messageType
+                state.clients[index].read = false
                 let tmp = state.clients[index]
                 state.clients.splice(index, 1)
                 state.clients.unshift(tmp)
@@ -151,7 +157,7 @@ export default new Vuex.Store({
                         client.lastName = response.data.lastName
                         client.organization = response.data.organization
                         client.lastMessageDateTime = Date.now()
-                        client.lastMessageType = 'message client'
+                        client.lastMessageType = message.messageType
                         client.lastMessageDifTime = 0
                     })
                 await axios.get('/api/v1/tasks/' + message.clientId)
@@ -165,17 +171,22 @@ export default new Vuex.Store({
 
 
         changeMainPageTask(state, task) {
-            // console.log(task)
             let clientIndex = state.clients.findIndex(c => c.id === task.clientId)
-            // console.log(state.clients[clientIndex].tasks)
-            let index = state.clients[clientIndex].tasks.findIndex(t => t.id === task.id)
-            // console.log(index)
-            if (index >= 0) {
+            let taskIndex = state.clients[clientIndex].tasks.findIndex(t => t.id === task.id)
+            // console.log('task.id', task.id)
+            // console.log('tasks', state.clients[clientIndex].tasks)
+            // console.log('')
+            // console.log('clientIndex', clientIndex)
+            // console.log('taskIndex', taskIndex)
+            // console.log('')
+            // console.log('state.clients[clientIndex].tasks', state.clients[clientIndex].tasks)
+            // console.log('state.clients[clientIndex].tasks[index]', state.clients[clientIndex].tasks[taskIndex])
+            if (taskIndex >= 0) {
                 if (!task.actual) {
-                    state.clients[clientIndex].tasks.splice(index, 1)
+                    state.clients[clientIndex].tasks.splice(taskIndex, 1)
                 }
             } else {
-                state.clients[clientIndex].tasks.splice(index, 0, task)
+                state.clients[clientIndex].tasks.splice(taskIndex, 0, task)
 
             }
         },
@@ -252,6 +263,10 @@ export default new Vuex.Store({
             state.selectedMessages.forEach(element => this.state.messages[element].selected = false)
             state.selectedMessages = []
         },
+
+        changeHideMenuStatus(state) {
+            state.hideMenu = !state.hideMenu
+        }
     },
 
     actions: {},

@@ -1,11 +1,11 @@
 <template>
-  <div id="right-side">
-    <div class="right-side-column">
-      <div v-for="(client, index) in clients">
+  <div id="client-cards">
+    <div class="client-cards-column">
+      <div v-for="client in clients">
         <router-link
             :to="{name: 'chat', params: {id: client.id}}"
             class="client-card"
-            :class="{ 'unreaded' : !client.readed}"
+            :class="{ 'unread' : !client.read}"
         >
           <!--          card-header-->
           <div class="client-card-info" style="border-bottom: 1px solid #adb2b2; display: flex ">
@@ -29,22 +29,25 @@
 
           <!--          card-date-->
           <div class="client-card-info date" style="display: flex; border-top: 1px solid #adb2b2">
-            <span
-                v-if="client.lastMessageType === 'message client'"
-                class="date icon"
-            > south_east </span>
-            <span
-                v-else-if="client.lastMessageType === 'message support'"
-                class="date icon"
-            > north_west </span>
+            <span class="date icon"> {{ directionOfTheLastMessage(client.id) }}</span>
+            <!--            <span-->
+            <!--                v-if="client.lastMessageType == 'client'"-->
+            <!--                class="date icon"-->
+            <!--            > south_east </span>-->
+            <!--            <span-->
+            <!--                v-else-if="client.lastMessageType == 'support'"-->
+            <!--                class="date icon"-->
+            <!--            > north_west </span>-->
+            <!--            <span-->
+            <!--                v-else-->
+            <!--                class="icon"-->
+            <!--            > comment </span>-->
             <!--:style="{transform: (client.lastMessageType == 'message client' ? ': rotate(0deg);' : 'rotate(180deg)')}" v-text="input"-->
             <span
-                class="date"
                 :style="{color: dateTimeDifColor(client.lastMessageDateTime) }"
                 style="margin-left: 0;"
             > {{ client.lastMessageDifTime }} </span>
             <span
-                class="date"
                 style="margin-left: 0;"
             > {{ "(" + getClientLastMessageDateTime(client) + ")" }} </span>
           </div>
@@ -170,6 +173,17 @@ export default {
       } else {
         return 'red'
       }
+    },
+
+    directionOfTheLastMessage(id) {
+      let clients = this.$store.getters.CLIENTS
+      let index = clients.findIndex(x => x.id === id)
+      if (clients[index].lastMessageType == "client")
+        return 'south_east'
+      else if (clients[index].lastMessageType == "support")
+        return 'north_west'
+      else
+        return 'comment'
     }
   },
 
@@ -199,7 +213,7 @@ body {
   background-color: #f8ffff;
 }
 
-#right-side {
+#client-cards {
   height: 100%;
   /*width: 100%;*/
   padding: 10px;
@@ -223,7 +237,7 @@ body {
   /*border: 1px solid #adb2b2;*/
 }
 
-.right-side-column {
+.client-cards-column {
   width: 100%;
   min-width: 400px;
   margin: 0 5px;
@@ -246,6 +260,7 @@ body {
 .client-card .client-card-info .date {
   margin-right: 10px;
   margin-left: auto;
+  margin-top: 2px;
   font-size: 13px;
 }
 
@@ -288,8 +303,14 @@ body {
   /*font-weight: bold;*/
 }
 
-.unreaded {
+.unread {
   font-weight: bold;
-  /*background: #d64040;*/
+  background-color: #dce7f9;
+}
+
+.unread:hover {
+  box-shadow: 0 0 2px 1px #adb2b2;
+  font-weight: bold;
+  background-color: #b5c8e0;
 }
 </style>

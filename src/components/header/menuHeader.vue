@@ -1,10 +1,9 @@
 <template>
   <div class="menuHeader">
     <span
-        @click="menu"
+        @click="hideMenu"
         style="cursor: pointer; user-select: none;"
     > &#9776;Меню </span>
-
   </div>
 </template>
 
@@ -19,14 +18,12 @@ export default {
   },
 
   methods: {
-    menu() {
-      if (document.getElementById("left-side").style.display === "") {
-        document.getElementById("left-side").style.display = "none";
-      } else {
-        document.getElementById("left-side").style.display = "";
-      }
+    hideMenu() {
+      this.$store.commit('changeHideMenuStatus')
     }
-  }, mounted() {
+  },
+
+  mounted() {
     // console.log('header')
   }
 }
